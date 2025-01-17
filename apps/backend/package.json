@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start-server": "node listen.js"
+    "start-server": "node listen.js",
+    "setup-dbs": "psql -f ./db/setup.sql",
+    "seed": "node ./db/run-seed.js"
   },
   "keywords": [],
   "author": "",
@@ -13,6 +15,10 @@
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
-    "express": "^4.21.2"
+    "express": "^4.21.2",
+    "jest": "^29.7.0",
+    "pg": "^8.13.1",
+    "pg-format": "^1.0.4",
+    "supertest": "^7.0.0"
   }
 }

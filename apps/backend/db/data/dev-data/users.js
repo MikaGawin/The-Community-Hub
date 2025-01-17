@@ -1,0 +1,42 @@
+module.exports = [
+  {
+    name: "Alice Smith",
+    email: "alice@example.com",
+    gmail: "alice@gmail.com",
+    password: "hashed_password_123",
+    avatar_url: "https://example.com/avatars/alice.jpg",
+    staff: true,
+  },
+  {
+    name: "Bob Johnson",
+    email: "bob@example.com",
+    gmail: null,
+    password: "hashed_password_456",
+    avatar_url: "https://example.com/avatars/bob.jpg",
+    staff: true,
+  },
+  {
+    name: "Charlie Brown",
+    email: "charlie@example.com",
+    gmail: "charlie@gmail.com",
+    password: "hashed_password_789",
+    avatar_url: null,
+    staff: false,
+  },
+  {
+    name: "Dana White",
+    email: "dana@example.com",
+    gmail: "dana@gmail.com",
+    password: "hashed_password_abc",
+    avatar_url: "https://example.com/avatars/dana.jpg",
+    staff: false,
+  },
+  {
+    name: "Evan Green",
+    email: "evan@example.com",
+    gmail: null,
+    password: "hashed_password_def",
+    avatar_url: null,
+    staff: false,
+  },
+];
