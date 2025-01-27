@@ -19,7 +19,8 @@ const seed = ({ userData, eventData, subscribedEventsData }) => {
         gmail VARCHAR,
         password VARCHAR NOT NULL,
         avatar_url VARCHAR,
-        staff boolean DEFAULT false
+        staff boolean DEFAULT false,
+        UNIQUE (email)
         );`);
     })
     .then(() => {

@@ -1,6 +1,5 @@
 const { Pool } = require("pg");
 const ENV = process.env.NODE_ENV || "development";
-
 const config = {};
 
 require("dotenv").config({
@@ -8,7 +7,7 @@ require("dotenv").config({
 });
 
 if (ENV === "production") {
-  config.connectionString = process.ENV.DATABASE_URL;
+  config.connectionString = process.env.DATABASE_URL;
   console.log(config.connectionString);
   config.max = 2;
 }

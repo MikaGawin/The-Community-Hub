@@ -7,7 +7,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start-server": "node listen.js",
     "setup-dbs": "psql -f ./db/setup.sql",
-    "seed": "node ./db/run-seed.js"
+    "seed": "node ./db/run-seed.js",
+    "seed-prod": "NODE_ENV=production npm run seed",
+    "dev": "nodemon listen.js"
   },
   "keywords": [],
   "author": "",
@@ -20,5 +22,8 @@
     "pg": "^8.13.1",
     "pg-format": "^1.0.4",
     "supertest": "^7.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
   }
 }

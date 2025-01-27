@@ -1,8 +1,12 @@
+import UserForm from "./userDetails/userForm"
+
 function Home({ isLoggedIn }) {
-    console.log(isLoggedIn);
     return (
         <>
             <header> the user is logged in: {isLoggedIn.toString()}</header>
+            <div>
+                <UserForm />
+            </div>
         </>
     );
 }
