@@ -14,7 +14,8 @@ const seed = ({ userData, eventData, subscribedEventsData }) => {
     .then(() => {
       return db.query(`CREATE TABLE users (
         user_id SERIAL PRIMARY KEY,
-        name VARCHAR NOT NULL,
+        forename VARCHAR NOT NULL,
+        surname VARCHAR NOT NULL,
         email VARCHAR NOT NULL,
         gmail VARCHAR,
         password VARCHAR NOT NULL,
@@ -42,9 +43,10 @@ const seed = ({ userData, eventData, subscribedEventsData }) => {
     })
     .then(() => {
       const insertUsersQueryStr = format(
-        "INSERT INTO users ( name, email, gmail, password, avatar_url, staff) VALUES %L;",
-        userData.map(({ name, email, gmail, password, avatar_url, staff }) => [
-          name,
+        "INSERT INTO users ( forename, surname, email, gmail, password, avatar_url, staff) VALUES %L;",
+        userData.map(({ forename, surname, email, gmail, password, avatar_url, staff }) => [
+          forename,
+          surname,
           email,
           gmail,
           password,
