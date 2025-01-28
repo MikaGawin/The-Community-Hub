@@ -28,3 +28,12 @@ exports.insertUser = ({ forename, surname, email }, hashedPassword) => {
     return user;
   });
 };
+
+exports.getUserByEmail = async (email) => {
+  const sqlQuery = `
+  SELECT * FROM users
+  WHERE email = $1;`
+  return db.query(sqlQuery, [email]).then(({rows}) => {
+    return rows[0]
+  })
+}

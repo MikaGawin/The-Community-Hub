@@ -26,7 +26,7 @@ describe("users", () => {
   describe("POST user", () => {
     test("Post user will return 201 and the user details excluding the password", () => {
       return request(app)
-        .post("/users")
+        .post("/register")
         .send({
           forename: "James",
           surname: "Smith",
@@ -46,7 +46,7 @@ describe("users", () => {
     });
     test("posting a duplicated email will return 409 email already exists", () => {
       return request(app)
-        .post("/users")
+        .post("/register")
         .send({
           forename: "Alice",
           surname: "Smith",
@@ -61,7 +61,7 @@ describe("users", () => {
     describe("posting with missing infomation", () => {
       test("missing forename", () => {
         return request(app)
-          .post("/users")
+          .post("/register")
           .send({
             surname: "Smith",
             email: "james.smith@example.com",
@@ -74,7 +74,7 @@ describe("users", () => {
       });
       test("missing surname", () => {
         return request(app)
-          .post("/users")
+          .post("/register")
           .send({
             forename: "James",
             email: "james.smith@example.com",
@@ -87,7 +87,7 @@ describe("users", () => {
       });
       test("missing email", () => {
         return request(app)
-          .post("/users")
+          .post("/register")
           .send({
             forename: "James",
             surname: "Smith",
@@ -100,7 +100,7 @@ describe("users", () => {
       });
       test("missing password", () => {
         return request(app)
-          .post("/users")
+          .post("/register")
           .send({
             forename: "James",
             surname: "Smith",
@@ -111,6 +111,43 @@ describe("users", () => {
             expect(body.msg).toBe("password is required");
           });
       });
+    });
+  });
+  describe("login", () => {
+    test("posting a correct email and password should return a token and the user details", () => {
+      return request(app)
+        .post("/login")
+        .send({ email: "alice@example.com", password: "hashed_password_123" })
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.token);
+          expect(body.user).toMatchObject({
+            forename: "Alice",
+            surname: "Smith",
+            email: "alice@example.com",
+            gmail: "alice@gmail.com",
+            avatar_url: "https://example.com/avatars/alice.jpg",
+            staff: true,
+          });
+        });
+    });
+    test("posting an incorrect email should return 404 user not found", () => {
+      return request(app)
+        .post("/login")
+        .send({ email: "walice@example.com", password: "hashed_password_123" })
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("User not found");
+        });
+    });
+    test("posting an incorrect password should return 401 incorrect password", () => {
+      return request(app)
+        .post("/login")
+        .send({ email: "alice@example.com", password: "hashed" })
+        .expect(401)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Incorrect password");
+        });
     });
   });
 });

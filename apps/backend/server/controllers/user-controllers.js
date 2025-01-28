@@ -1,5 +1,9 @@
 const bcrypt = require("bcrypt");
-const { insertUser, checkEmailExists } = require("../models/user-models");
+const {
+  insertUser,
+  checkEmailExists,
+  getUserByEmail,
+} = require("../models/user-models");
 
 exports.postUser = (req, res, next) => {
   const requiredData = ["forename", "surname", "email", "password"];
@@ -24,4 +28,21 @@ exports.postUser = (req, res, next) => {
         .catch(next);
     }
   );
+};
+
+exports.checkUser = async (email, password) => {
+  try {
+    const user = await getUserByEmail(email);
+    if (!user) {
+      throw { status: 404, msg: "User not found" };
+    }
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      throw { status: 401, msg: "Incorrect password" };
+    }
+
+    return user;
+  } catch (err) {
+    throw err;
+  }
 };
