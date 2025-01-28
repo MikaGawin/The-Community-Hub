@@ -23,7 +23,7 @@ function UserForm() {
       forename: userInput.Forename,
       surname: userInput.Surname,
       email: userInput.Email,
-      Password: userInput.Password,
+      password: userInput.Password,
     };
     postUser(newUser).then(
       setUserInput({

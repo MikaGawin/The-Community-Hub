@@ -6,6 +6,7 @@ const request = axios.create({
 
 export function postUser(user) {
   return request.post("/users", user).then(({ data }) => {
+    console.log(data);
     return data;
   });
 }
