@@ -10,9 +10,9 @@ function UserLogin() {
   const { login } = useAuth();
   const [userInput, setUserInput] = useState({
     // Email: "",
-    Password: "",
+    // Password: "",
     Email: "alice@example.com",
-    //   Password: "hashed_password_123",
+    Password: "hashed_password_123",
   });
   const [loginError, setLoginError] = useState(null);
   const [hasEmailError, setHasEmailError] = useState(false);
@@ -43,8 +43,6 @@ function UserLogin() {
     }
   };
 
-  console.log(loginIsProcessing);
-
   function handleSubmit(event) {
     event.preventDefault();
     setLoginIsProcessing(true);
@@ -66,7 +64,6 @@ function UserLogin() {
           //send to something went wrong page
         }
       } else {
-        console.log(data);
         login(data.user, data.token);
         const redirectPath = location.state?.from?.pathname || "/";
         navigate(redirectPath, { replace: true });

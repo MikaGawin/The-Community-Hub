@@ -13,10 +13,19 @@ request.interceptors.request.use((req) => {
 });
 
 export function postUser(user) {
-  return request.post("/users", user).then(({ data }) => {
-    console.log(data);
-    return data;
-  });
+  return request
+    .post("/register", user)
+    .then(({ data }) => {
+      return data;
+    })
+    .catch((err) => {
+      if (err.response) {
+        return err;
+      } else {
+        //send to something went wrong page
+        console.log(err);
+      }
+    });
 }
 
 export function requestUserToken(email, password) {
@@ -30,7 +39,7 @@ export function requestUserToken(email, password) {
         return err;
       } else {
         //send to something went wrong page
-        console.log(err)
+        console.log(err);
       }
     });
 }

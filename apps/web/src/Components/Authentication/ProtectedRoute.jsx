@@ -6,6 +6,7 @@ export function ProtectedRoute({ children }) {
   const location = useLocation();
 
   if (!user) {
+    console.log("access denied")
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
