@@ -1,4 +1,5 @@
 const format = require("pg-format");
+const bcrypt = require("bcrypt");
 const db = require("./connection");
 const { createReference } = require("./utils");
 
@@ -14,12 +15,14 @@ const seed = ({ userData, eventData, subscribedEventsData }) => {
     .then(() => {
       return db.query(`CREATE TABLE users (
         user_id SERIAL PRIMARY KEY,
-        name VARCHAR NOT NULL,
+        forename VARCHAR NOT NULL,
+        surname VARCHAR NOT NULL,
         email VARCHAR NOT NULL,
         gmail VARCHAR,
         password VARCHAR NOT NULL,
         avatar_url VARCHAR,
-        staff boolean DEFAULT false
+        staff boolean DEFAULT false,
+        UNIQUE (email)
         );`);
     })
     .then(() => {
@@ -40,16 +43,35 @@ const seed = ({ userData, eventData, subscribedEventsData }) => {
         );`);
     })
     .then(() => {
-      const insertUsersQueryStr = format(
-        "INSERT INTO users ( name, email, gmail, password, avatar_url, staff) VALUES %L;",
-        userData.map(({ name, email, gmail, password, avatar_url, staff }) => [
-          name,
+      const usersDataHashedPromises = userData.map(
+        async ({
+          forename,
+          surname,
           email,
           gmail,
           password,
           avatar_url,
           staff,
-        ])
+        }) => {
+          const hashedPassword = await bcrypt.hash(password, 10);
+          return [
+            forename,
+            surname,
+            email,
+            gmail,
+            hashedPassword,
+            avatar_url,
+            staff,
+          ];
+        }
+      );
+
+      return Promise.all(usersDataHashedPromises);
+    })
+    .then((usersDataHashed) => {
+      const insertUsersQueryStr = format(
+        "INSERT INTO users ( forename, surname, email, gmail, password, avatar_url, staff) VALUES %L;",
+        usersDataHashed
       );
       return db.query(insertUsersQueryStr);
     })

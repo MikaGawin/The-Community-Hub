@@ -1,6 +1,7 @@
 module.exports = [
   {
-    name: "Alice Smith",
+    forename: "Alice",
+    surname: "Smith",
     email: "alice@example.com",
     gmail: "alice@gmail.com",
     password: "hashed_password_123",
@@ -8,7 +9,8 @@ module.exports = [
     staff: true,
   },
   {
-    name: "Bob Johnson",
+    forename: "Bob",
+    surname: "Johnson",
     email: "bob@example.com",
     gmail: null,
     password: "hashed_password_456",
@@ -16,7 +18,8 @@ module.exports = [
     staff: true,
   },
   {
-    name: "Charlie Brown",
+    forename: "Charlie",
+    surname: "Brown",
     email: "charlie@example.com",
     gmail: "charlie@gmail.com",
     password: "hashed_password_789",
@@ -24,7 +27,8 @@ module.exports = [
     staff: false,
   },
   {
-    name: "Dana White",
+    forename: "Dana",
+    surname: "White",
     email: "dana@example.com",
     gmail: "dana@gmail.com",
     password: "hashed_password_abc",
@@ -32,7 +36,8 @@ module.exports = [
     staff: false,
   },
   {
-    name: "Evan Green",
+    forename: "Evan",
+    surname: "Green",
     email: "evan@example.com",
     gmail: null,
     password: "hashed_password_def",

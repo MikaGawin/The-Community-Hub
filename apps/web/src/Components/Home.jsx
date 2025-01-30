@@ -1,10 +1,14 @@
+import UserCreateForm from "./UserDetails/userCreateForm";
+
 function Home({ isLoggedIn }) {
-    console.log(isLoggedIn);
-    return (
-        <>
-            <header> the user is logged in: {isLoggedIn.toString()}</header>
-        </>
-    );
+  return (
+    <>
+      <div>the user is logged in: {isLoggedIn.toString()}</div>
+      <div>
+        <UserCreateForm />
+      </div>
+    </>
+  );
 }
 
 export default Home;
