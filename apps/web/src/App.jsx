@@ -21,6 +21,7 @@ function App() {
         <AuthProvider>
           <Routes>
             <Route path="/" element={<Events />} />
+            <Route path="/search/:search" element={<Events />} />
             <Route path="/login" element={<UserLogin />} />
             <Route path="/signup" element={<UserCreateForm />} />
             <Route
