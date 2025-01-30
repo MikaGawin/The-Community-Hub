@@ -30,10 +30,16 @@ const seed = ({ userData, eventData, subscribedEventsData }) => {
         event_id SERIAL PRIMARY KEY,
         title VARCHAR NOT NULL,
         date TIMESTAMP NOT NULL,
+        end_date TIMESTAMP NOT NULL,
+        location VARCHAR NOT NULL,
+        capacity INT,
         text VARCHAR NOT NULL,
         event_owner INT REFERENCES users(user_id) ON DELETE CASCADE NOT NULL,
         pictures VARCHAR ARRAY,
-        fb_link VARCHAR
+        fb_link VARCHAR,
+        twitter_link VARCHAR,
+        instagram VARCHAR,
+        calendar_event_id VARCHAR
         );`);
     })
     .then(() => {
@@ -77,15 +83,34 @@ const seed = ({ userData, eventData, subscribedEventsData }) => {
     })
     .then(() => {
       const insertEventsQueryStr = format(
-        "INSERT INTO events (title, date, text, event_owner, pictures, fb_link) VALUES %L;",
+        "INSERT INTO events (title, date, end_date, location, capacity, text, event_owner, pictures, fb_link, twitter_link, instagram, calendar_event_id) VALUES %L;",
         eventData.map(
-          ({ title, date, text, event_owner, pictures, fb_link }) => [
+          ({
             title,
             date,
+            end_date,
+            location,
+            capacity,
+            text,
+            event_owner,
+            pictures,
+            fb_link,
+            twitter_link,
+            instagram,
+            calendar_event_id,
+          }) => [
+            title,
+            date,
+            end_date,
+            location,
+            capacity,
             text,
             event_owner,
             pictures ? `{${pictures.join(",")}}` : null,
-            fb_link,
+            fb_link || null,
+            twitter_link || null,
+            instagram || null,
+            calendar_event_id || null,
           ]
         )
       );

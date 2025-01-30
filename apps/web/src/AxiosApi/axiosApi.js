@@ -43,3 +43,34 @@ export function requestUserToken(email, password) {
       }
     });
 }
+
+export function getEvents({
+  page = 1,
+  sort_by,
+  search,
+  startDate,
+  endDate,
+  sortOrder,
+  resultsPerPage,
+}) {
+  const queries = {
+    params: {
+      page,
+      sort_by,
+      search,
+      startDate,
+      latestDate: endDate,
+      sortOrder,
+      limit: resultsPerPage,
+    },
+  };
+  return request
+    .get("/events", queries)
+    .then(({ data }) => {
+      return data;
+    })
+    .catch((err) => {
+      //send to something went wrong page
+      console.log(err);
+    });
+}
