@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { postUser } from "../../AxiosApi/userRequests";
+import { postUser } from "../../AxiosApi/axiosApi";
 
-function UserForm() {
+function UserCreateForm() {
   const [userInput, setUserInput] = useState({
     Forename: "",
     Surname: "",
@@ -90,4 +90,4 @@ function UserForm() {
   );
 }
 
-export default UserForm;
+export default UserCreateForm;
