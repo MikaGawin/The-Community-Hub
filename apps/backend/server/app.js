@@ -8,6 +8,7 @@ require("dotenv").config({
 });
 
 const { postUser, checkUser } = require("./controllers/user-controllers");
+const { getEvents } = require("./controllers/event-controllers");
 const {
   invalidEndpoint,
   internalServerError,
@@ -60,6 +61,8 @@ app.use(express.json());
 app.get("/", (req, res, next) => {
   res.send("The app is working!").catch(next);
 });
+
+app.route("/events").get(getEvents);
 
 app.route("/register").post(postUser);
 app.route("/login").post(async (req, res, next) => {
