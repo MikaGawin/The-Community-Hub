@@ -1,0 +1,119 @@
+import { useState } from "react";
+import { useAuth } from "../Authentication/AuthContext";
+
+function Account() {
+  const { user, loading } = useAuth();
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const [forename, setForename] = useState(user?.forename || "");
+  const [surname, setSurname] = useState(user?.surname || "");
+  const [nameError, setNameError] = useState("");
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+
+  const validateName = () => {
+    if (!forename.trim() || !surname.trim()) {
+      setNameError("Forename and surname are required.");
+      return false;
+    }
+    setNameError("");
+    return true;
+  };
+
+  const validatePassword = () => {
+    const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    if (!newPassword.match(passwordRegex)) {
+      setPasswordError(
+        "Password must be at least 8 characters, include an uppercase letter, a number, and a special character."
+      );
+      return false;
+    }
+    if (newPassword !== confirmPassword) {
+      setPasswordError("Passwords do not match.");
+      return false;
+    }
+    setPasswordError("");
+    return true;
+  };
+
+  const handleUpdateName = (e) => {
+    e.preventDefault();
+    if (validateName()) {
+        //send api request
+      console.log("Name updated:", { forename, surname });
+      setIsEditingName(false);
+    }
+  };
+
+  const handleChangePassword = (e) => {
+    e.preventDefault();
+    if (validatePassword()) {
+        //send api request
+      console.log("Password changed successfully");
+      setIsChangingPassword(false);
+    }
+  };
+
+  if (loading) return <p>Loading...</p>;
+
+  return (
+    <div>
+      <h2>Account Details</h2>
+      <p>Email: {user?.email}</p>
+      {!isEditingName ? (
+        <>
+          <p>Name: {forename} {surname}</p>
+          <button onClick={() => setIsEditingName(true)}>Update Name</button>
+        </>
+      ) : (
+        <form onSubmit={handleUpdateName}>
+          <input
+            type="text"
+            placeholder="Forename"
+            value={forename}
+            onChange={(e) => setForename(e.target.value)}
+          />
+          <input
+            type="text"
+            placeholder="Surname"
+            value={surname}
+            onChange={(e) => setSurname(e.target.value)}
+          />
+          {nameError && <p style={{ color: "red" }}>{nameError}</p>}
+          <button type="submit">Save Name</button>
+        </form>
+      )}
+      <hr />
+      {!isChangingPassword ? (
+        <button onClick={() => setIsChangingPassword(true)}>Change Password</button>
+      ) : (
+        <form onSubmit={handleChangePassword}>
+          <input
+            type="password"
+            placeholder="Old Password"
+            value={oldPassword}
+            onChange={(e) => setOldPassword(e.target.value)}
+          />
+          <input
+            type="password"
+            placeholder="New Password"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+          />
+          <input
+            type="password"
+            placeholder="Confirm New Password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+          />
+          {passwordError && <p style={{ color: "red" }}>{passwordError}</p>}
+          <button type="submit">Save Password</button>
+        </form>
+      )}
+    </div>
+  );
+}
+
+export default Account;

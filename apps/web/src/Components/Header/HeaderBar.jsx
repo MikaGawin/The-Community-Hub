@@ -107,10 +107,14 @@ export default function CombinedAppBar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={() => navigate(`/account/${user.id}`)}>
+      <MenuItem
+        onClick={() => {
+          navigate(`/account/${user.user_id}`);
+        }}
+      >
         My Account
       </MenuItem>
-      <MenuItem onClick={() => navigate(`/account/${user.id}`)}>
+      <MenuItem onClick={() => navigate(`/account/${user.user_id}`)}>
         My Events
       </MenuItem>
       <MenuItem
@@ -143,10 +147,10 @@ export default function CombinedAppBar() {
     >
       {user ? (
         <>
-          <MenuItem onClick={() => navigate(`/account/${user.id}`)}>
+          <MenuItem onClick={() => navigate(`/account/${user.user_id}`)}>
             <Typography variant="body1">My Account</Typography>
           </MenuItem>
-          <MenuItem onClick={() => navigate(`/account/${user.id}`)}>
+          <MenuItem onClick={() => navigate(`/account/${user_id}`)}>
             <Typography variant="body1">My Events</Typography>
           </MenuItem>
           <MenuItem

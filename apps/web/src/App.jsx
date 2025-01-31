@@ -8,6 +8,7 @@ import UserLogin from "./Components/UserDetails/UserLogin";
 import UserCreateForm from "./Components/UserDetails/userCreateForm";
 import { AuthProvider } from "./Components/Authentication/AuthContext";
 import { ProtectedRoute } from "./Components/Authentication/ProtectedRoute";
+import Account from "./Components/User/Account";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -28,7 +29,7 @@ function App() {
               path="/account/:userid"
               element={
                 <ProtectedRoute>
-                  <Home isLoggedIn={isLoggedIn} />
+                  <Account isLoggedIn={isLoggedIn} />
                 </ProtectedRoute>
               }
             />

@@ -1,8 +1,0 @@
-import { useAuth } from "../Authentication/AuthContext";
-
-function Account({}) {
-    const { user, loading } = useAuth();
-
-}
-
-export default Account;
