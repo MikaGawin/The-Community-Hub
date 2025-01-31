@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import "./App.css";
 import Home from "./Components/Home";
-import Events from "./Components/Events/Events"
+import Events from "./Components/Events/Events";
 import HeaderBar from "./Components/Header/HeaderBar";
 import UserLogin from "./Components/UserDetails/UserLogin";
 import UserCreateForm from "./Components/UserDetails/userCreateForm";
@@ -14,18 +14,18 @@ function App() {
 
   return (
     <>
-      <header>
-        <HeaderBar />
-      </header>
-      <main>
-        <AuthProvider>
+      <AuthProvider>
+        <header>
+          <HeaderBar />
+        </header>
+        <main>
           <Routes>
             <Route path="/" element={<Events />} />
             <Route path="/search/:search" element={<Events />} />
             <Route path="/login" element={<UserLogin />} />
             <Route path="/signup" element={<UserCreateForm />} />
             <Route
-              path="/dashboard"
+              path="/account/:userid"
               element={
                 <ProtectedRoute>
                   <Home isLoggedIn={isLoggedIn} />
@@ -33,8 +33,8 @@ function App() {
               }
             />
           </Routes>
-        </AuthProvider>
-      </main>
+        </main>
+      </AuthProvider>
     </>
   );
 }
