@@ -2,8 +2,11 @@ import React, { useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { useAuth } from "../Authentication/AuthContext";
+import { postEvent } from "../../AxiosApi/axiosApi";
 
 function CreateEvent() {
+  const { user, loading, logout, showToast } = useAuth();
   const [formData, setFormData] = useState({
     title: "",
     location: "",
@@ -17,6 +20,11 @@ function CreateEvent() {
     instaLink: "",
     image: null,
   });
+
+  function authFailed() {
+    logout();
+    showToast("Your session has expired. Please log in again.");
+  }
 
   const [errors, setErrors] = useState({});
 
@@ -113,9 +121,13 @@ function CreateEvent() {
   const handleSubmit = (event) => {
     event.preventDefault();
     if (validateForm()) {
-      console.log("Event Created Successfully!");
+      postEvent(formData).then((data) => {
+        console.log(data);
+      });
     }
   };
+
+  if (loading) return <p>Loading...</p>;
 
   return (
     <div>

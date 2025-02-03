@@ -14,7 +14,11 @@ const {
   getUserByEmail,
   patchStaffStatusById,
 } = require("./controllers/user-controllers");
-const { getEvents, getUserEvents } = require("./controllers/event-controllers");
+const {
+  getEvents,
+  getUserEvents,
+  postEvent,
+} = require("./controllers/event-controllers");
 const {
   invalidEndpoint,
   internalServerError,
@@ -109,6 +113,7 @@ app.route("/user/details").get(authenticateStaffToken, getUserByEmail);
 app
   .route("/user/details/makestaff/:userid")
   .patch(authenticateStaffToken, patchStaffStatusById);
+app.route("/events").post(authenticateStaffToken, postEvent);
 app.all("*", invalidEndpoint);
 
 app.use(internalServerError);
