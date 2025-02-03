@@ -29,7 +29,7 @@ exports.insertUser = ({ forename, surname, email }, hashedPassword) => {
   });
 };
 
-exports.getUserByEmail = async (email) => {
+exports.selectUserByEmail = async (email) => {
   const sqlQuery = `
   SELECT * FROM users
   WHERE email = $1;`;
@@ -56,5 +56,13 @@ exports.changeUserPassword = (userid, password) => {
 `;
   return db.query(sqlQuery, [password, userid]).then(({ rows }) => {
     return rows[0];
+  });
+};
+
+exports.changeStaffStatusById = (userid) => {
+  const sqlQuery =
+    "UPDATE users SET staff = true WHERE user_id = $1 RETURNING *";
+  return db.query(sqlQuery, [userid]).then(({ rows }) => {
+    return rows;
   });
 };

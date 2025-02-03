@@ -119,3 +119,41 @@ export function getUserEvents(userId) {
       }
     });
 }
+
+export function getUserByEmail(email) {
+  return request
+    .get(`/user/details?email=${email}`)
+    .then(({ data }) => {
+      return data;
+    })
+    .catch((err) => {
+      if (err.response) {
+        throw new Error(
+          err.response.data?.msg || "An error occurred during the request."
+        );
+      } else {
+        throw new Error(
+          "An unexpected error occurred. Please try again later."
+        );
+      }
+    });
+}
+
+export function patchStaffStatus(userid) {
+  return request
+    .patch(`user/details/makestaff/${userid}`)
+    .then(({ data }) => {
+      return data;
+    })
+    .catch((err) => {
+      if (err.response) {
+        throw new Error(
+          err.response.data?.msg || "An error occurred during the request."
+        );
+      } else {
+        throw new Error(
+          "An unexpected error occurred. Please try again later."
+        );
+      }
+    });
+}

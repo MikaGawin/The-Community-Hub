@@ -2,9 +2,10 @@ const bcrypt = require("bcrypt");
 const {
   insertUser,
   checkEmailExists,
-  getUserByEmail,
+  selectUserByEmail,
   getUserById,
   changeUserPassword,
+  changeStaffStatusById,
 } = require("../models/user-models");
 
 exports.postUser = (req, res, next) => {
@@ -34,7 +35,7 @@ exports.postUser = (req, res, next) => {
 
 exports.checkUser = async (email, password) => {
   try {
-    const user = await getUserByEmail(email);
+    const user = await selectUserByEmail(email);
     if (!user) {
       throw { status: 404, msg: "User not found" };
     }
@@ -77,4 +78,46 @@ exports.patchUserPassword = async (req, res, next) => {
     console.error(err);
     next(err);
   }
+};
+
+exports.getUserByEmail = (req, res, next) => {
+  const email = req.query.email;
+  selectUserByEmail(email)
+    .then((user) => {
+      if (!user) {
+        throw { status: 404, msg: "User not found" };
+      } else {
+        const name = user.forename + " " + user.surname;
+        const userid = user.user_id;
+        const { staff } = user;
+        return res.status(200).send({ name, staff, userid });
+      }
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+exports.patchStaffStatusById = (req, res, next) => {
+  const userid = req.params.userid;
+  changeStaffStatusById(userid)
+    .then((updatedUser) => {
+      if (updatedUser.length === 0) {
+        res.status(404).send({ message: "User not found" });
+      } else {
+        const userWithoutSensitiveData = {
+          user_id: updatedUser[0].user_id,
+          name: updatedUser[0].name,
+          email: updatedUser[0].email,
+          staff: updatedUser[0].staff,
+        };
+        res.status(200).send({
+          message: `${userWithoutSensitiveData.name} is now a staff member.`,
+          user: userWithoutSensitiveData,
+        });
+      }
+    })
+    .catch((err) => {
+      next(err);
+    });
 };
