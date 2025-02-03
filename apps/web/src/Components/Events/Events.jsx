@@ -7,6 +7,7 @@ import sortOptions from "../../utils/sortOptions";
 import { getEvents } from "../../AxiosApi/axiosApi";
 import PageSetter from "./PageSetter";
 import DateSelecter from "./DateSelecter";
+import ConnectionFailed from "../ErrorFeedback/ConnectionFailed";
 
 function Events() {
   const { search } = useParams();
@@ -18,6 +19,7 @@ function Events() {
     eventCount: 0,
   });
   const [isLoading, setIsLoading] = useState(true);
+  const [connectSuccess, setConnectSuccess] = useState(true);
 
   const [sortedBy, setSortedBy] = useState({
     sortByText: "Event Date",
@@ -55,7 +57,9 @@ function Events() {
     setEndDate(newEndDate);
   }
 
-  const totalPages = Math.ceil(eventsData.eventCount / resultsPerPage);
+  const totalPages = eventsData.eventCount
+    ? Math.ceil(eventsData.eventCount / resultsPerPage)
+    : 0;
   const page = Number(searchParams.get("page")) || 1;
   const sortState = searchParams.get("sort_by");
 
@@ -86,7 +90,11 @@ function Events() {
       startDate,
       endDate,
     }).then((data) => {
-      setEventsData(data);
+      if (data === "failed to connect to server") {
+        setConnectSuccess(false);
+      } else {
+        setEventsData(data);
+      }
       setIsLoading(false);
     });
   }, [sortedBy, page, search, startDate, endDate]);
@@ -97,6 +105,10 @@ function Events() {
     newParams.set("sort_by", index);
     newParams.set("page", 1);
     setSearchParams(newParams);
+  }
+
+  if(!connectSuccess) {
+    return <ConnectionFailed />
   }
 
   return (

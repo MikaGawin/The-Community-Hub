@@ -32,8 +32,29 @@ exports.insertUser = ({ forename, surname, email }, hashedPassword) => {
 exports.getUserByEmail = async (email) => {
   const sqlQuery = `
   SELECT * FROM users
-  WHERE email = $1;`
-  return db.query(sqlQuery, [email]).then(({rows}) => {
-    return rows[0]
-  })
-}
+  WHERE email = $1;`;
+  return db.query(sqlQuery, [email]).then(({ rows }) => {
+    return rows[0];
+  });
+};
+
+exports.getUserById = async (userId) => {
+  const sqlQuery = `
+  SELECT * FROM users
+  WHERE user_id = $1;`;
+  return db.query(sqlQuery, [userId]).then(({ rows }) => {
+    return rows[0];
+  });
+};
+
+exports.changeUserPassword = (userid, password) => {
+  const sqlQuery = `
+  UPDATE users 
+  SET password = $1 
+  WHERE user_id = $2 
+  RETURNING user_id;
+`;
+  return db.query(sqlQuery, [password, userid]).then(({ rows }) => {
+    return rows[0];
+  });
+};

@@ -7,8 +7,12 @@ require("dotenv").config({
   path: `${__dirname}/../../../.env.${ENV}`,
 });
 
-const { postUser, checkUser } = require("./controllers/user-controllers");
-const { getEvents } = require("./controllers/event-controllers");
+const {
+  postUser,
+  checkUser,
+  patchUserPassword,
+} = require("./controllers/user-controllers");
+const { getEvents, getUserEvents } = require("./controllers/event-controllers");
 const {
   invalidEndpoint,
   internalServerError,
@@ -23,7 +27,7 @@ const SECRET_KEY = process.env.SECRET_KEY;
 const generateToken = (user) => {
   return jwt.sign(
     {
-      id: user.id,
+      id: user.user_id,
       forename: user.forename,
       surname: user.surname,
       email: user.email,
@@ -32,12 +36,12 @@ const generateToken = (user) => {
       staff: user.staff,
     },
     SECRET_KEY,
-    { expiresIn: "1h" }
+    { expiresIn: "2h" }
   );
 };
 
 const authenticateToken = (req, res, next) => {
-  const authHeader = req.headers.authorisation;
+  const authHeader = req.headers.authorization;
   const token = authHeader && authHeader.split(" ")[1];
   if (!token) {
     return res
@@ -63,7 +67,6 @@ app.get("/", (req, res, next) => {
 });
 
 app.route("/events").get(getEvents);
-
 app.route("/register").post(postUser);
 app.route("/login").post(async (req, res, next) => {
   const { email, password } = req.body;
@@ -75,6 +78,9 @@ app.route("/login").post(async (req, res, next) => {
     next(err);
   }
 });
+
+app.route("/user/password/:userid").patch(authenticateToken, patchUserPassword);
+app.route("/user/events/:userId").get(authenticateToken, getUserEvents);
 
 app.all("*", invalidEndpoint);
 

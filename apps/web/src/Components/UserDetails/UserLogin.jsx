@@ -17,6 +17,7 @@ function UserLogin() {
   const [loginError, setLoginError] = useState(null);
   const [hasEmailError, setHasEmailError] = useState(false);
   const [emailError, setEmailError] = useState("");
+  const [connectionError, setConnectionError] = useState(false);
   const [hasPasswordError, setHasPasswordError] = useState(false);
   const [loginIsProcessing, setLoginIsProcessing] = useState(false);
 
@@ -44,6 +45,7 @@ function UserLogin() {
   };
 
   function handleSubmit(event) {
+    setConnectionError(false);
     event.preventDefault();
     setLoginIsProcessing(true);
     validateEmail(userInput.Email);
@@ -63,6 +65,8 @@ function UserLogin() {
         } else {
           //send to something went wrong page
         }
+      } else if (data === "failed to connect to server") {
+        setConnectionError(true)
       } else {
         login(data.user, data.token);
         const redirectPath = location.state?.from?.pathname || "/";
@@ -105,6 +109,7 @@ function UserLogin() {
               <>Submit</>
             )}
           </button>
+          {connectionError && <p style={{ color: "red" }}>Failed to connect to server please try again later</p>}
         </form>
         <Link to="/signup">Sign Up</Link>
       </h1>

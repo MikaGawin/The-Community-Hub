@@ -14,6 +14,7 @@ import MoreIcon from "@mui/icons-material/MoreVert";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import { useAuth } from "../Authentication/AuthContext";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -55,14 +56,25 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function CombinedAppBar() {
+  const { user, logout } = useAuth();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
+  const [searchValue, setSearchValue] = useState("");
+  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const handleChange = (event) => {
+    setSearchValue(event.target.value);
+  };
+
   const handleProfileMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
+    if (event.currentTarget) {
+      setAnchorEl(event.currentTarget);
+    }
   };
 
   const handleMobileMenuClose = () => {
@@ -79,7 +91,7 @@ export default function CombinedAppBar() {
   };
 
   const menuId = "primary-search-account-menu";
-  const renderMenu = (
+  const renderMenu = anchorEl && (
     <Menu
       anchorEl={anchorEl}
       anchorOrigin={{
@@ -95,13 +107,39 @@ export default function CombinedAppBar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+      <MenuItem
+        onClick={() => {
+          navigate(`/account/${user.user_id}`);
+        }}
+      >
+        My Account
+      </MenuItem>
+      <MenuItem onClick={() => navigate(`/account/subscribed/${user.user_id}`)}>
+        My Events
+      </MenuItem>
+      {user.staff && (
+        <>
+          <MenuItem onClick={() => navigate(`/staff/createEvent`)}>
+            Create Event
+          </MenuItem>
+          <MenuItem onClick={() => navigate(`/staff/addStaff`)}>
+            Add Staff
+          </MenuItem>
+        </>
+      )}
+      <MenuItem
+        onClick={() => {
+          handleMenuClose();
+          logout();
+        }}
+      >
+        Logout
+      </MenuItem>
     </Menu>
   );
 
   const mobileMenuId = "primary-search-account-menu-mobile";
-  const renderMobileMenu = (
+  const renderMobileMenu = mobileMoreAnchorEl && (
     <Menu
       anchorEl={mobileMoreAnchorEl}
       anchorOrigin={{
@@ -117,27 +155,40 @@ export default function CombinedAppBar() {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem onClick={handleProfileMenuOpen}>
-        <IconButton
-          size="large"
-          aria-label="account of current user"
-          aria-controls="primary-search-account-menu"
-          aria-haspopup="true"
-          color="inherit"
-        >
-          <AccountCircle />
-        </IconButton>
-        <p>Profile</p>
-      </MenuItem>
+      {user ? (
+        <>
+          <MenuItem onClick={() => navigate(`/account/${user.user_id}`)}>
+            <Typography variant="body1">My Account</Typography>
+          </MenuItem>
+          <MenuItem onClick={() => navigate(`/account/subscribed/${user_id}`)}>
+            <Typography variant="body1">My Events</Typography>
+          </MenuItem>
+          {user.staff && (
+            <>
+              <MenuItem onClick={() => navigate(`/staff/createEvent`)}>
+                <Typography variant="body1">Create Event</Typography>
+              </MenuItem>
+              <MenuItem onClick={() => navigate(`/staff/addStaff`)}>
+                <Typography variant="body1">Add Staff</Typography>
+              </MenuItem>
+            </>
+          )}
+          <MenuItem
+            onClick={() => {
+              handleMobileMenuClose();
+              logout();
+            }}
+          >
+            <Typography variant="body1">Logout</Typography>
+          </MenuItem>
+        </>
+      ) : (
+        <MenuItem onClick={() => navigate("/login")}>
+          <Typography variant="body1">Login</Typography>
+        </MenuItem>
+      )}
     </Menu>
   );
-
-  const [searchValue, setSearchValue] = useState("");
-  const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
-  const handleChange = (event) => {
-    setSearchValue(event.target.value);
-  };
 
   const handleSearch = (event) => {
     event.preventDefault();
@@ -146,9 +197,11 @@ export default function CombinedAppBar() {
     if (searchValue) {
       navigate(`/search/${searchValue}?${newSearchParams.toString()}`);
     }
-    //  else {
-    //   navigate(`/?${newSearchParams.toString()}`);
-    // }
+  };
+
+  const returnHome = () => {
+    event.preventDefault();
+    navigate("/");
   };
 
   return (
@@ -156,10 +209,16 @@ export default function CombinedAppBar() {
       <AppBar position="static">
         <Toolbar>
           <Typography
+            onClick={returnHome}
             variant="h6"
             noWrap
-            component="div"
-            sx={{ display: { xs: "none", sm: "block" } }}
+            component="a"
+            sx={{
+              display: { xs: "none", sm: "block" },
+              cursor: "pointer",
+              textDecoration: "none",
+              color: "inherit",
+            }}
           >
             TheCommunityHub
           </Typography>
@@ -177,31 +236,49 @@ export default function CombinedAppBar() {
             </form>
           </Search>
           <Box sx={{ flexGrow: 1 }} />
-          <Box sx={{ display: { xs: "none", md: "flex" } }}>
-            <IconButton
-              size="large"
-              edge="end"
-              aria-label="account of current user"
-              aria-controls={menuId}
-              aria-haspopup="true"
-              onClick={handleProfileMenuOpen}
-              color="inherit"
-            >
-              <AccountCircle />
-            </IconButton>
-          </Box>
-          <Box sx={{ display: { xs: "flex", md: "none" } }}>
-            <IconButton
-              size="large"
-              aria-label="show more"
-              aria-controls={mobileMenuId}
-              aria-haspopup="true"
-              onClick={handleMobileMenuOpen}
-              color="inherit"
-            >
-              <MoreIcon />
-            </IconButton>
-          </Box>
+          <>
+            {user ? (
+              <>
+                <Box sx={{ display: { xs: "none", md: "flex" } }}>
+                  <IconButton
+                    size="large"
+                    edge="end"
+                    aria-label="account of current user"
+                    aria-controls={menuId}
+                    aria-haspopup="true"
+                    onClick={handleProfileMenuOpen}
+                    color="inherit"
+                  >
+                    <AccountCircle />
+                  </IconButton>
+                </Box>
+                <Box sx={{ display: { xs: "flex", md: "none" } }}>
+                  <IconButton
+                    size="large"
+                    aria-label="show more"
+                    aria-controls={mobileMenuId}
+                    aria-haspopup="true"
+                    onClick={handleMobileMenuOpen}
+                    color="inherit"
+                  >
+                    <MoreIcon />
+                  </IconButton>
+                </Box>
+              </>
+            ) : (
+              <Typography
+                variant="body1"
+                sx={{
+                  cursor: "pointer",
+                  color: "inherit",
+                  "&:hover": { textDecoration: "underline" },
+                }}
+                onClick={() => navigate("/login")}
+              >
+                Sign in
+              </Typography>
+            )}
+          </>
         </Toolbar>
       </AppBar>
       {renderMobileMenu}
