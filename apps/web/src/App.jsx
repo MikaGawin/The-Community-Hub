@@ -9,6 +9,7 @@ import { AuthProvider } from "./Components/Authentication/AuthContext";
 import { ProtectedRoute } from "./Components/Authentication/ProtectedRoute";
 import { StaffRoute } from "./Components/Authentication/StaffRoute";
 import AddStaff from "./Components/Staff/AddStaff"
+import CreateEvent from "./Components/Staff/CreateEvent";
 import Account from "./Components/User/Account";
 import MyEvents from "./Components/MyEvents/MyEvents";
 import { ToastContainer } from "react-toastify";
@@ -56,7 +57,7 @@ function App() {
               path="/staff/createEvent"
               element ={
                 <StaffRoute>
-                  <AddStaff />
+                  <CreateEvent />
                 </StaffRoute>
               }
             />

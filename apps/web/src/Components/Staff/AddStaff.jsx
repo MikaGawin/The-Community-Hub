@@ -4,7 +4,7 @@ import { useAuth } from "../Authentication/AuthContext";
 
 function AddStaff() {
   const [email, setEmail] = useState("");
-  const { loading, logout, showToast } = useAuth();
+  const { user, loading, logout, showToast } = useAuth();
   const [userName, setUserName] = useState(null);
   const [confirmation, setConfirmation] = useState(false);
   const [loadingUser, setLoadingUser] = useState(false);

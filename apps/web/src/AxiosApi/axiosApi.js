@@ -157,3 +157,22 @@ export function patchStaffStatus(userid) {
       }
     });
 }
+
+export function postEvent() {
+  return request
+    .post("/events")
+    .then(({ data }) => {
+      return data;
+    })
+    .catch((err) => {
+      if (err.response) {
+        throw new Error(
+          err.response.data?.msg || "An error occurred during the request."
+        );
+      } else {
+        throw new Error(
+          "An unexpected error occurred. Please try again later."
+        );
+      }
+    });
+}
