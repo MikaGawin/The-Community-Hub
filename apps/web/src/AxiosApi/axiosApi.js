@@ -97,3 +97,25 @@ export function changePassword(currentPassword, newPassword, userid) {
       }
     });
 }
+
+export function getUserEvents(userId) {
+  return request
+    .get(`/user/events/${userId}`)
+    .then(({ data }) => {
+      return data;
+    })
+    .catch((err) => {
+      if (err.response) {
+        return {
+          status: err.response.status,
+          message:
+            err.response.data?.msg || "An error occurred during the request.",
+        };
+      } else {
+        return {
+          status: 500,
+          message: "Failed to connect to server. Please try again later.",
+        };
+      }
+    });
+}

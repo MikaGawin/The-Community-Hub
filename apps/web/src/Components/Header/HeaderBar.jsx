@@ -114,7 +114,7 @@ export default function CombinedAppBar() {
       >
         My Account
       </MenuItem>
-      <MenuItem onClick={() => navigate(`/account/${user.user_id}`)}>
+      <MenuItem onClick={() => navigate(`/account/subscribed/${user.user_id}`)}>
         My Events
       </MenuItem>
       <MenuItem
@@ -150,7 +150,7 @@ export default function CombinedAppBar() {
           <MenuItem onClick={() => navigate(`/account/${user.user_id}`)}>
             <Typography variant="body1">My Account</Typography>
           </MenuItem>
-          <MenuItem onClick={() => navigate(`/account/${user_id}`)}>
+          <MenuItem onClick={() => navigate(`/account/subscribed/${user_id}`)}>
             <Typography variant="body1">My Events</Typography>
           </MenuItem>
           <MenuItem
@@ -248,7 +248,11 @@ export default function CombinedAppBar() {
             ) : (
               <Typography
                 variant="body1"
-                sx={{ cursor: "pointer", color: "inherit", "&:hover": { textDecoration: "underline" }, }}
+                sx={{
+                  cursor: "pointer",
+                  color: "inherit",
+                  "&:hover": { textDecoration: "underline" },
+                }}
                 onClick={() => navigate("/login")}
               >
                 Sign in

@@ -8,11 +8,11 @@ import UserCreateForm from "./Components/UserDetails/userCreateForm";
 import { AuthProvider } from "./Components/Authentication/AuthContext";
 import { ProtectedRoute } from "./Components/Authentication/ProtectedRoute";
 import Account from "./Components/User/Account";
+import MyEvents from "./Components/MyEvents/MyEvents"
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   return (
     <>
@@ -31,7 +31,15 @@ function App() {
               path="/account/:userid"
               element={
                 <ProtectedRoute>
-                  <Account isLoggedIn={isLoggedIn} />
+                  <Account />
+                </ProtectedRoute>
+              }
+            />
+                        <Route
+              path="/account/subscribed/:userid"
+              element={
+                <ProtectedRoute>
+                  <MyEvents />
                 </ProtectedRoute>
               }
             />

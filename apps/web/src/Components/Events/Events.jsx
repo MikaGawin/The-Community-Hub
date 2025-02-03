@@ -107,6 +107,10 @@ function Events() {
     setSearchParams(newParams);
   }
 
+  if(!connectSuccess) {
+    return <ConnectionFailed />
+  }
+
   return (
     <>
       <div id="sort-and-result-count">
