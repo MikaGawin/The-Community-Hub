@@ -22,6 +22,7 @@ function UserCreateForm() {
   const [hasSurnameError, setHasSurnameError] = useState(false);
   const [surnameError, setSurnameError] = useState(false);
   const [createUserIsProcessing, setCreateUserIsProcessing] = useState(false);
+  const [connectionError, setConnectionError] = useState(false);
 
   const navigate = useNavigate();
 
@@ -30,11 +31,14 @@ function UserCreateForm() {
     if (!email) {
       setEmailError("Email is required.");
       setHasEmailError(true);
+      return false;
     } else if (!emailRegex.test(email)) {
       setEmailError("Please enter a valid email address.");
       setHasEmailError(true);
+      return false;
     } else {
       setHasEmailError(false);
+      return true;
     }
   };
 
@@ -43,14 +47,18 @@ function UserCreateForm() {
     if (!forename) {
       setForenameError("Forename is required.");
       setHasForenameError(true);
+      return false;
     } else if (forename.length > 30) {
       setForenameError("Forename is too long.");
       setHasForenameError(true);
+      return false;
     } else if (!nameRegex.test(forename)) {
       setForenameError("Forename should only contain letters.");
       setHasForenameError(true);
+      return false;
     } else {
       setHasForenameError(false);
+      return true;
     }
   };
 
@@ -59,14 +67,18 @@ function UserCreateForm() {
     if (!surname) {
       setSurnameError("Surname is required.");
       setHasSurnameError(true);
+      return false;
     } else if (surname.length > 30) {
       setSurnameError("Surname is too long");
       setHasSurnameError(true);
+      return false;
     } else if (!nameRegex.test(surname)) {
       setSurnameError("Surname should only contain letters.");
       setHasSurnameError(true);
+      return false;
     } else {
       setHasSurnameError(false);
+      return true;
     }
   };
 
@@ -76,16 +88,20 @@ function UserCreateForm() {
     if (!password) {
       setPasswordError("Password is required.");
       setHasPasswordError(true);
+      return false;
     } else if (password.length < 6) {
       setPasswordError("Password must be at least 6 characters.");
       setHasPasswordError(true);
+      return false;
     } else if (!passwordRegex.test(password)) {
       setPasswordError(
         "Password must include at least one number and one symbol."
       );
       setHasPasswordError(true);
+      return false;
     } else {
       setHasPasswordError(false);
+      return true;
     }
   };
 
@@ -93,8 +109,10 @@ function UserCreateForm() {
     if (repeatPassword !== password) {
       setRepeatPasswordError("Passwords do not match.");
       setHasRepeatPasswordError(true);
+      return false;
     } else {
       setHasRepeatPasswordError(false);
+      return true;
     }
   };
 
@@ -107,33 +125,32 @@ function UserCreateForm() {
 
   function handleSubmit(event) {
     event.preventDefault();
-    validatePassword(userInput.Password);
-    validateEmail(userInput.Email);
-    validateForename(userInput.Forename);
-    validateSurname(userInput.Surname);
-    validateRepeatPassword(userInput.RepeatPassword, userInput.Password);
+    setConnectionError(false);
+    let valid =
+      validatePassword(userInput.Password) &&
+      validateEmail(userInput.Email) &&
+      validateForename(userInput.Forename) &&
+      validateSurname(userInput.Surname) &&
+      validateRepeatPassword(userInput.RepeatPassword, userInput.Password)
+        ? true
+        : false;
+
     const newUser = {
       forename: userInput.Forename,
       surname: userInput.Surname,
       email: userInput.Email,
       password: userInput.Password,
     };
-    if (
-      !hasEmailError &&
-      !hasForenameError &&
-      !hasSurnameError &&
-      !hasPasswordError &&
-      !hasRepeatPasswordError
-    ) {
+    if (valid) {
       setCreateUserIsProcessing(true);
       postUser(newUser).then((data) => {
         if (data.response) {
           if (data.response.data.msg === "Email already exists") {
             setHasEmailError(true);
             setEmailError("Email already exists");
-          } else {
-            //send to something went wrong page
           }
+        } else if (data === "failed to connect to server") {
+          setConnectionError(true);
         } else {
           setUserInput({
             Forename: "",
@@ -214,6 +231,11 @@ function UserCreateForm() {
               <>Submit</>
             )}
           </button>
+          {connectionError && (
+            <p style={{ color: "red" }}>
+              An error occurred. Please try again.
+            </p>
+          )}
         </form>
       </h1>
     </>

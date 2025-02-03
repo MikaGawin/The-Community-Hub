@@ -1,4 +1,5 @@
 import axios from "axios";
+import { useAuth } from "../Components/Authentication/AuthContext";
 
 const request = axios.create({
   baseURL: "http://localhost:9090/",
@@ -7,7 +8,7 @@ const request = axios.create({
 request.interceptors.request.use((req) => {
   const token = localStorage.getItem("token");
   if (token) {
-    req.headers.Authorization = `Bearer ${token}`;
+    req.headers.authorization = `Bearer ${token}`;
   }
   return req;
 });
@@ -22,7 +23,7 @@ export function postUser(user) {
       if (err.response) {
         return err;
       } else {
-        //send to something went wrong page
+        return "failed to connect to server";
         console.log(err);
       }
     });
@@ -38,7 +39,7 @@ export function requestUserToken(email, password) {
       if (err.response) {
         return err;
       } else {
-        //send to something went wrong page
+        return "failed to connect to server";
         console.log(err);
       }
     });
@@ -70,7 +71,29 @@ export function getEvents({
       return data;
     })
     .catch((err) => {
-      //send to something went wrong page
+      return "failed to connect to server";
       console.log(err);
+    });
+}
+
+export function changePassword(currentPassword, newPassword, userid) {
+  return request
+    .patch(`/user/password/${userid}`, { currentPassword, newPassword })
+    .then(({ data, status }) => {
+      return { data, status };
+    })
+    .catch((err) => {
+      if (err.response) {
+        return {
+          status: err.response.status,
+          message:
+            err.response.data?.msg || "An error occurred during the request.",
+        };
+      } else {
+        return {
+          status: 500,
+          message: "Failed to connect to server. Please try again later.",
+        };
+      }
     });
 }

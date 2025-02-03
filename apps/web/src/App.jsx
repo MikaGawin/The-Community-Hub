@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import "./App.css";
-import Home from "./Components/Home";
 import Events from "./Components/Events/Events";
 import HeaderBar from "./Components/Header/HeaderBar";
 import UserLogin from "./Components/UserDetails/UserLogin";
@@ -9,6 +8,8 @@ import UserCreateForm from "./Components/UserDetails/userCreateForm";
 import { AuthProvider } from "./Components/Authentication/AuthContext";
 import { ProtectedRoute } from "./Components/Authentication/ProtectedRoute";
 import Account from "./Components/User/Account";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -19,6 +20,7 @@ function App() {
         <header>
           <HeaderBar />
         </header>
+        <ToastContainer />
         <main>
           <Routes>
             <Route path="/" element={<Events />} />

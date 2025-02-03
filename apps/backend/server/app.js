@@ -7,7 +7,11 @@ require("dotenv").config({
   path: `${__dirname}/../../../.env.${ENV}`,
 });
 
-const { postUser, checkUser } = require("./controllers/user-controllers");
+const {
+  postUser,
+  checkUser,
+  patchUserPassword,
+} = require("./controllers/user-controllers");
 const { getEvents } = require("./controllers/event-controllers");
 const {
   invalidEndpoint,
@@ -32,12 +36,12 @@ const generateToken = (user) => {
       staff: user.staff,
     },
     SECRET_KEY,
-    { expiresIn: "1h" }
+    { expiresIn: "2h" }
   );
 };
 
 const authenticateToken = (req, res, next) => {
-  const authHeader = req.headers.authorisation;
+  const authHeader = req.headers.authorization;
   const token = authHeader && authHeader.split(" ")[1];
   if (!token) {
     return res
@@ -75,6 +79,8 @@ app.route("/login").post(async (req, res, next) => {
     next(err);
   }
 });
+
+app.route("/user/password/:userid").patch(authenticateToken, patchUserPassword);
 
 app.all("*", invalidEndpoint);
 

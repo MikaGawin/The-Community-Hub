@@ -1,7 +1,6 @@
 const { selectEvents, selectEventsCount } = require("../models/event-models");
 
 exports.getEvents = (req, res, next) => {
-  console.log(req.query);
   const queries = req.query;
   const eventsAndCount = [];
   eventsAndCount.push(selectEvents(queries));

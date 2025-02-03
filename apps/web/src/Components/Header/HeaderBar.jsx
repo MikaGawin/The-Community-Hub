@@ -179,15 +179,26 @@ export default function CombinedAppBar() {
     }
   };
 
+  const returnHome = () => {
+    event.preventDefault();
+    navigate("/");
+  };
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
           <Typography
+            onClick={returnHome}
             variant="h6"
             noWrap
-            component="div"
-            sx={{ display: { xs: "none", sm: "block" } }}
+            component="a"
+            sx={{
+              display: { xs: "none", sm: "block" },
+              cursor: "pointer",
+              textDecoration: "none",
+              color: "inherit",
+            }}
           >
             TheCommunityHub
           </Typography>
@@ -237,10 +248,10 @@ export default function CombinedAppBar() {
             ) : (
               <Typography
                 variant="body1"
-                sx={{ cursor: "pointer", color: "inherit" }}
+                sx={{ cursor: "pointer", color: "inherit", "&:hover": { textDecoration: "underline" }, }}
                 onClick={() => navigate("/login")}
               >
-                Hello, please sign in
+                Sign in
               </Typography>
             )}
           </>

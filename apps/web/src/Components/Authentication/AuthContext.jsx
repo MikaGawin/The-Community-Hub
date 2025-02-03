@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
+import { toast } from "react-toastify";
 import { jwtDecode } from "jwt-decode";
 
 const AuthContext = createContext();
@@ -36,13 +37,25 @@ export function AuthProvider({ children }) {
     setUser(userData);
   };
 
+  const showToast = (message) => {
+    toast(message, {
+      position: "bottom-left",
+      autoClose: 5000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
+  };
+
   const logout = () => {
     localStorage.removeItem("token");
     setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, loading }}>
+    <AuthContext.Provider value={{ user, login, logout, loading, showToast }}>
       {children}
     </AuthContext.Provider>
   );
