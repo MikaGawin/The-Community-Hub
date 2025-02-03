@@ -117,6 +117,16 @@ export default function CombinedAppBar() {
       <MenuItem onClick={() => navigate(`/account/subscribed/${user.user_id}`)}>
         My Events
       </MenuItem>
+      {user.staff && (
+        <>
+          <MenuItem onClick={() => navigate(`/staff/createEvent`)}>
+            Create Event
+          </MenuItem>
+          <MenuItem onClick={() => navigate(`/staff/addStaff`)}>
+            Add Staff
+          </MenuItem>
+        </>
+      )}
       <MenuItem
         onClick={() => {
           handleMenuClose();
@@ -153,6 +163,16 @@ export default function CombinedAppBar() {
           <MenuItem onClick={() => navigate(`/account/subscribed/${user_id}`)}>
             <Typography variant="body1">My Events</Typography>
           </MenuItem>
+          {user.staff && (
+            <>
+              <MenuItem onClick={() => navigate(`/staff/createEvent`)}>
+                <Typography variant="body1">Create Event</Typography>
+              </MenuItem>
+              <MenuItem onClick={() => navigate(`/staff/addStaff`)}>
+                <Typography variant="body1">Add Staff</Typography>
+              </MenuItem>
+            </>
+          )}
           <MenuItem
             onClick={() => {
               handleMobileMenuClose();

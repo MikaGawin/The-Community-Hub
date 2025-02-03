@@ -7,13 +7,14 @@ import UserLogin from "./Components/UserDetails/UserLogin";
 import UserCreateForm from "./Components/UserDetails/userCreateForm";
 import { AuthProvider } from "./Components/Authentication/AuthContext";
 import { ProtectedRoute } from "./Components/Authentication/ProtectedRoute";
+import { StaffRoute } from "./Components/Authentication/StaffRoute";
+import AddStaff from "./Components/Staff/AddStaff"
 import Account from "./Components/User/Account";
-import MyEvents from "./Components/MyEvents/MyEvents"
+import MyEvents from "./Components/MyEvents/MyEvents";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 function App() {
-
   return (
     <>
       <AuthProvider>
@@ -35,12 +36,28 @@ function App() {
                 </ProtectedRoute>
               }
             />
-                        <Route
+            <Route
               path="/account/subscribed/:userid"
               element={
                 <ProtectedRoute>
                   <MyEvents />
                 </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/staff/addStaff"
+              element ={
+                <StaffRoute>
+                  <AddStaff />
+                </StaffRoute>
+              }
+            />
+                        <Route
+              path="/staff/createEvent"
+              element ={
+                <StaffRoute>
+                  <AddStaff />
+                </StaffRoute>
               }
             />
           </Routes>
