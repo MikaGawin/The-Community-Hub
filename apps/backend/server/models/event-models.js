@@ -84,3 +84,18 @@ exports.selectEventsCount = ({ startDate, latestDate, search }) => {
     return rows[0].count;
   });
 };
+
+exports.selectedUsersEvents = (userId) => {
+  sqlQuery = `
+  SELECT e.*
+  FROM subscribed_events se
+  JOIN events e ON se.event_id = e.event_id
+  WHERE se.user_id = $1
+  AND e.date >= CURRENT_DATE
+  ORDER BY e.date ASC;
+  `;
+
+  return db.query(sqlQuery, [userId]).then(({ rows }) => {
+    return rows;
+  });
+};

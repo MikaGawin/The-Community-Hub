@@ -12,7 +12,7 @@ const {
   checkUser,
   patchUserPassword,
 } = require("./controllers/user-controllers");
-const { getEvents } = require("./controllers/event-controllers");
+const { getEvents, getUserEvents } = require("./controllers/event-controllers");
 const {
   invalidEndpoint,
   internalServerError,
@@ -67,7 +67,6 @@ app.get("/", (req, res, next) => {
 });
 
 app.route("/events").get(getEvents);
-
 app.route("/register").post(postUser);
 app.route("/login").post(async (req, res, next) => {
   const { email, password } = req.body;
@@ -81,6 +80,7 @@ app.route("/login").post(async (req, res, next) => {
 });
 
 app.route("/user/password/:userid").patch(authenticateToken, patchUserPassword);
+app.route("/user/events/:userId").get(authenticateToken, getUserEvents);
 
 app.all("*", invalidEndpoint);
 

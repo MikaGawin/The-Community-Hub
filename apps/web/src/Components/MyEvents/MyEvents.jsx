@@ -13,13 +13,20 @@ function Events() {
   const [isLoading, setIsLoading] = useState(true);
   const [connectSuccess, setConnectSuccess] = useState(true);
 
+  function authFailed() {
+    logout();
+    showToast("Your session has expired. Please log in again.");
+  }
+
   useEffect(() => {
     setIsLoading(true);
     getUserEvents(user.user_id).then((data) => {
-      if (data === "failed to connect to server") {
-        setConnectSuccess(false);
-      } else if (data.events){
+      if (data.events) {
         setEventsData(data);
+      } else if (data.message === "Invalid or expired token.") {
+        authFailed();
+      } else {
+        setConnectSuccess(false);
       }
       setIsLoading(false);
     });
@@ -41,15 +48,15 @@ function Events() {
         )}
       </div>
       <div>
-      <ul>
-  {eventsData.events.length > 0 ? (
-    eventsData.events.map((event) => (
-      <EventCard key={event.event_id} event={event} />
-    ))
-  ) : (
-    <p>No events available.</p>
-  )}
-</ul>
+        <ul>
+          {eventsData.events.length > 0 ? (
+            eventsData.events.map((event) => (
+              <EventCard key={event.event_id} event={event} />
+            ))
+          ) : (
+            <p>No events available.</p>
+          )}
+        </ul>
       </div>
     </>
   );
