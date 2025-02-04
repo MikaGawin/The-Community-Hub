@@ -56,7 +56,11 @@ function AddStaff() {
         }
       })
       .catch((err) => {
-        setUserFetchError(err.message);
+        if (err.message === "Invalid or expired token.") {
+          authFailed();
+        } else {
+          setUserFetchError("An error occurred, please try again later.");
+        }
         setLoadingUser(false);
       });
   };
@@ -79,8 +83,12 @@ function AddStaff() {
           }
         })
         .catch((err) => {
+          if (err.message === "Invalid or expired token.") {
+            authFailed();
+          } else {
+            setUserFetchError("An error occurred, please try again later.");
+          }
           setLoadingConfirm(false);
-          setUserFetchError("An error occurred, please try again later.");
         });
     } else {
       setError("Please confirm the action before submitting.");

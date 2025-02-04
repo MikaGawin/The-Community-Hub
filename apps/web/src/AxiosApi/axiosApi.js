@@ -192,7 +192,6 @@ export function postEvent({
       },
     })
     .then(({ data }) => {
-      console.log("success")
       return data;
     })
     .catch((err) => {

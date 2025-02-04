@@ -26,8 +26,6 @@ const {
 
 const app = express();
 
-//jwt functions
-
 const SECRET_KEY = process.env.SECRET_KEY;
 
 const generateToken = (user) => {
@@ -42,7 +40,7 @@ const generateToken = (user) => {
       staff: user.staff,
     },
     SECRET_KEY,
-    { expiresIn: "2h" }
+    { expiresIn: "10s" }
   );
 };
 

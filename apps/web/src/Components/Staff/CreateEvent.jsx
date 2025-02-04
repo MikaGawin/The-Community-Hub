@@ -7,6 +7,7 @@ import { postEvent } from "../../AxiosApi/axiosApi";
 
 function CreateEvent() {
   const { user, loading, logout, showToast } = useAuth();
+  const [uploading, setUploading] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
     location: "",
@@ -20,6 +21,7 @@ function CreateEvent() {
     instaLink: "",
     image: null,
   });
+  const [imagePreview, setImagePreview] = useState(null);
 
   function authFailed() {
     logout();
@@ -27,8 +29,23 @@ function CreateEvent() {
   }
 
   const [errors, setErrors] = useState({});
+  const [generalError, setGeneralError] = useState(null);
 
   const handleChange = (field, value) => {
+    if (field === "image") {
+      const allowedTypes = ["image/png", "image/jpeg", "image/jpg"];
+
+      if (!allowedTypes.includes(value.type)) {
+        alert("Only JPG, JPEG, or PNG files are allowed.");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.readAsDataURL(value);
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
+    }
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
@@ -120,10 +137,24 @@ function CreateEvent() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    setGeneralError(null);
     if (validateForm()) {
-      postEvent(formData).then((data) => {
-        console.log(data);
-      });
+      setUploading(true);
+      postEvent(formData)
+        .then((data) => {
+          setUploading(false);
+          if (data.message === "Invalid or expired token.") {
+            authFailed();
+          }
+        })
+        .catch((err) => {
+          if (err.message === "Invalid or expired token.") {
+            authFailed();
+          } else {
+            setUserFetchError("An error occurred, please try again later.");
+          }
+          setUploading(false);
+        });
     }
   };
 
@@ -260,12 +291,25 @@ function CreateEvent() {
           <label>Event Image</label>
           <input
             type="file"
+            accept="image/png, image/jpeg, image/jpg"
             onChange={(e) => handleChange("image", e.target.files[0])}
           />
         </div>
+        {imagePreview && (
+          <div>
+            <img
+              src={imagePreview}
+              alt="Preview"
+              style={{ width: "200px", height: "auto" }}
+            />
+          </div>
+        )}
 
         <div>
-          <button type="submit">Create Event</button>
+          <button type="submit">
+            {uploading ? "Loading..." : "Create event"}
+          </button>
+          {generalError && <p style={{ color: "red" }}>{generalError}</p>}
         </div>
       </form>
     </div>
