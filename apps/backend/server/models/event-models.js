@@ -1,4 +1,5 @@
 const db = require("../../db/connection");
+const format = require("pg-format");
 
 exports.selectEvents = ({
   startDate,
@@ -97,5 +98,40 @@ exports.selectedUsersEvents = (userId) => {
 
   return db.query(sqlQuery, [userId]).then(({ rows }) => {
     return rows;
+  });
+};
+
+exports.createEvent = ({
+  title,
+  date,
+  finishDate,
+  location,
+  description,
+  owner,
+  fbEvent,
+  instaLink,
+  image = null,
+}) => {
+  const pictures = [image];
+  const data = [
+    title,
+    date,
+    finishDate,
+    location,
+    100,
+    description,
+    owner,
+    pictures ? `{${pictures.join(",")}}` : null,
+    fbEvent || null,
+    null,
+    instaLink || null,
+    null,
+  ];
+  const insertEventsQueryStr = format(
+    "INSERT INTO events (title, date, end_date, location, capacity, text, event_owner, pictures, fb_link, twitter_link, instagram, calendar_event_id) VALUES %L RETURNING *;",
+    [data]
+  );
+  return db.query(insertEventsQueryStr).then(({ rows }) => {
+    return rows[0];
   });
 };

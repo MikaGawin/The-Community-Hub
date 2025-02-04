@@ -11,16 +11,21 @@ const {
   postUser,
   checkUser,
   patchUserPassword,
+  getUserByEmail,
+  patchStaffStatusById,
+  patchRemoveStaff,
 } = require("./controllers/user-controllers");
-const { getEvents, getUserEvents } = require("./controllers/event-controllers");
+const {
+  getEvents,
+  getUserEvents,
+  postEvent,
+} = require("./controllers/event-controllers");
 const {
   invalidEndpoint,
   internalServerError,
 } = require("./errorHandling/error-handlers");
 
 const app = express();
-
-//jwt functions
 
 const SECRET_KEY = process.env.SECRET_KEY;
 
@@ -57,6 +62,28 @@ const authenticateToken = (req, res, next) => {
   }
 };
 
+const authenticateStaffToken = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader && authHeader.split(" ")[1];
+  if (!token) {
+    return res
+      .status(401)
+      .send({ message: "Access denied. No token provided." });
+  }
+  try {
+    const decoded = jwt.verify(token, SECRET_KEY);
+    if (!decoded.staff) {
+      return res
+        .status(403)
+        .send({ message: "Access denied. User is not a staff member." });
+    }
+    req.user = decoded;
+    next();
+  } catch (err) {
+    res.status(403).send({ msg: "Invalid or expired token." });
+  }
+};
+
 app.use(cors());
 app.use(express.json());
 
@@ -81,7 +108,14 @@ app.route("/login").post(async (req, res, next) => {
 
 app.route("/user/password/:userid").patch(authenticateToken, patchUserPassword);
 app.route("/user/events/:userId").get(authenticateToken, getUserEvents);
-
+app.route("/user/details").get(authenticateStaffToken, getUserByEmail);
+app
+  .route("/user/details/makestaff/:userid")
+  .patch(authenticateStaffToken, patchStaffStatusById);
+app
+  .route("/user/details/revokestaff")
+  .patch(authenticateStaffToken, patchRemoveStaff);
+app.route("/events").post(authenticateStaffToken, postEvent);
 app.all("*", invalidEndpoint);
 
 app.use(internalServerError);

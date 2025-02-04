@@ -119,3 +119,109 @@ export function getUserEvents(userId) {
       }
     });
 }
+
+export function getUserByEmail(email) {
+  return request
+    .get(`/user/details?email=${email}`)
+    .then(({ data }) => {
+      return data;
+    })
+    .catch((err) => {
+      if (err.response) {
+        throw new Error(
+          err.response.data?.msg || "An error occurred during the request."
+        );
+      } else {
+        throw new Error(
+          "An unexpected error occurred. Please try again later."
+        );
+      }
+    });
+}
+
+export function patchStaffStatus(userid) {
+  return request
+    .patch(`user/details/makestaff/${userid}`)
+    .then(({ data }) => {
+      return data;
+    })
+    .catch((err) => {
+      if (err.response) {
+        throw new Error(
+          err.response.data?.msg || "An error occurred during the request."
+        );
+      } else {
+        throw new Error(
+          "An unexpected error occurred. Please try again later."
+        );
+      }
+    });
+}
+
+export function postEvent({
+  title,
+  location,
+  description,
+  startDate,
+  startTime,
+  endDate,
+  endTime,
+  fbEvent,
+  instaLink,
+  image,
+}) {
+  const formData = new FormData();
+
+  formData.append("title", title);
+  formData.append("location", location);
+  formData.append("description", description);
+  formData.append("startDate", startDate);
+  formData.append("startTime", startTime);
+  formData.append("endDate", endDate);
+  formData.append("endTime", endTime);
+  formData.append("fbEvent", fbEvent);
+  formData.append("instaLink", instaLink);
+
+  if (image) {
+    formData.append("image", image);
+  }
+  return request
+    .post("/events", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    })
+    .then(({ data }) => {
+      return data;
+    })
+    .catch((err) => {
+      if (err.response) {
+        throw new Error(
+          err.response.data?.msg || "An error occurred during the request."
+        );
+      } else {
+        throw new Error(
+          "An unexpected error occurred. Please try again later."
+        );
+      }
+    });
+}
+
+export function patchStaff() {
+  return request
+    .patch("user/details/revokestaff")
+    .then(({ data }) => {
+      return data;
+    })
+    .catch((err) => {
+      if (err.response) {
+        throw new Error(
+          err.response.data?.msg || "An error occurred during the request."
+        );
+      } else {
+        throw new Error(
+          "An unexpected error occurred. Please try again later."
+        );
+      }
+    });
+}

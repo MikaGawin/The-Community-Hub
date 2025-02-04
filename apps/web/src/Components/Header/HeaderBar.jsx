@@ -9,6 +9,7 @@ import InputBase from "@mui/material/InputBase";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
+import HomeIcon from '@mui/icons-material/Home';
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import { useNavigate } from "react-router-dom";
@@ -160,7 +161,7 @@ export default function CombinedAppBar() {
           <MenuItem onClick={() => navigate(`/account/${user.user_id}`)}>
             <Typography variant="body1">My Account</Typography>
           </MenuItem>
-          <MenuItem onClick={() => navigate(`/account/subscribed/${user_id}`)}>
+          <MenuItem onClick={() => navigate(`/account/subscribed/${user.user_id}`)}>
             <Typography variant="body1">My Events</Typography>
           </MenuItem>
           {user.staff && (
@@ -207,7 +208,19 @@ export default function CombinedAppBar() {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
-        <Toolbar>
+        <Toolbar sx={{ minHeight: "64px !important" }}>
+        <Box sx={{ display: { xs: "flex", sm: "none" } }}>
+                  <IconButton
+                    size="large"
+                    aria-label="home"
+                    aria-controls={mobileMenuId}
+                    aria-haspopup="true"
+                    onClick={returnHome}
+                    color="inherit"
+                  >
+                    <HomeIcon />
+                  </IconButton>
+                </Box>
           <Typography
             onClick={returnHome}
             variant="h6"
