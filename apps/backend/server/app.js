@@ -13,6 +13,7 @@ const {
   patchUserPassword,
   getUserByEmail,
   patchStaffStatusById,
+  patchRemoveStaff,
 } = require("./controllers/user-controllers");
 const {
   getEvents,
@@ -40,7 +41,7 @@ const generateToken = (user) => {
       staff: user.staff,
     },
     SECRET_KEY,
-    { expiresIn: "10s" }
+    { expiresIn: "2h" }
   );
 };
 
@@ -111,6 +112,9 @@ app.route("/user/details").get(authenticateStaffToken, getUserByEmail);
 app
   .route("/user/details/makestaff/:userid")
   .patch(authenticateStaffToken, patchStaffStatusById);
+app
+  .route("/user/details/revokestaff")
+  .patch(authenticateStaffToken, patchRemoveStaff);
 app.route("/events").post(authenticateStaffToken, postEvent);
 app.all("*", invalidEndpoint);
 

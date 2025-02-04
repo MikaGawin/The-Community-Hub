@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useAuth } from "../Authentication/AuthContext";
 import { changePassword } from "../../AxiosApi/axiosApi";
 import { CircularProgress } from "@mui/material";
+import StaffStatus from "./staffStatus";
 
 function Account() {
   const { user, loading, logout, showToast } = useAuth();
@@ -146,18 +147,31 @@ function Account() {
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
           />
-          {passwordError && <p style={{ color: "red" }}>{passwordError}</p>}
           <button type="submit">
-            {" "}
             {passwordUpdating === true ? (
               <CircularProgress size={20} />
             ) : (
               <>Save password</>
             )}
           </button>
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              setIsChangingPassword(false);
+            }}
+            >
+            <>Cancel</>
+          </button>
+            {passwordError && <p style={{ color: "red" }}>{passwordError}</p>}
         </form>
       )}
       {successMessage && <p style={{ color: "green" }}>{successMessage}</p>}
+      {user.staff && (
+        <div>
+          <hr />
+          <StaffStatus user={user} />
+        </div>
+      )}
     </div>
   );
 }

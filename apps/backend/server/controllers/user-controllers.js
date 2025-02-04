@@ -6,6 +6,7 @@ const {
   getUserById,
   changeUserPassword,
   changeStaffStatusById,
+  removeStaffStatusById
 } = require("../models/user-models");
 
 exports.postUser = (req, res, next) => {
@@ -121,3 +122,27 @@ exports.patchStaffStatusById = (req, res, next) => {
       next(err);
     });
 };
+
+exports.patchRemoveStaff = (req, res, next) => {
+  const userid = req.user.id
+  removeStaffStatusById(userid)
+    .then((updatedUser) => {
+      if (updatedUser.length === 0) {
+        res.status(404).send({ message: "User not found" });
+      } else {
+        const userWithoutSensitiveData = {
+          user_id: updatedUser[0].user_id,
+          name: updatedUser[0].name,
+          email: updatedUser[0].email,
+          staff: updatedUser[0].staff,
+        };
+        res.status(200).send({
+          message: `staff status removed.`,
+          user: userWithoutSensitiveData,
+        });
+      }
+    })
+    .catch((err) => {
+      next(err);
+    });
+}

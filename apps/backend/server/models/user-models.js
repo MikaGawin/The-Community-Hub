@@ -66,3 +66,11 @@ exports.changeStaffStatusById = (userid) => {
     return rows;
   });
 };
+
+exports.removeStaffStatusById = (userid) => {
+  const sqlQuery =
+    "UPDATE users SET staff = false WHERE user_id = $1 RETURNING *";
+  return db.query(sqlQuery, [userid]).then(({ rows }) => {
+    return rows;
+  });
+};

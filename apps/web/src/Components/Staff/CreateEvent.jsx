@@ -151,7 +151,7 @@ function CreateEvent() {
           if (err.message === "Invalid or expired token.") {
             authFailed();
           } else {
-            setUserFetchError("An error occurred, please try again later.");
+            setGeneralError("An error occurred, please try again later.");
           }
           setUploading(false);
         });
