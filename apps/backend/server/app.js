@@ -94,6 +94,7 @@ app.get("/", (req, res, next) => {
 });
 
 app.route("/events").get(getEvents);
+app.route("/event/${}")
 app.route("/register").post(postUser);
 app.route("/login").post(async (req, res, next) => {
   const { email, password } = req.body;

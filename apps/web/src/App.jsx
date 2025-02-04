@@ -21,6 +21,7 @@ import AddStaff from "./Components/Staff/AddStaff";
 import CreateEvent from "./Components/Staff/CreateEvent";
 import Account from "./Components/User/Account";
 import MyEvents from "./Components/MyEvents/MyEvents";
+import NotFoundPage from "./Components/ErrorFeedback/NotFoundPage";
 
 function App() {
   return (
@@ -103,6 +104,7 @@ function App() {
                       </StaffRoute>
                     }
                   />
+                  <Route path="*" element={<NotFoundPage />} />
                 </Routes>
               </main>
             </Box>
