@@ -19,7 +19,9 @@ const {
   getEvents,
   getUserEvents,
   postEvent,
-  getEventById
+  getEventById,
+  checkSubscribed,
+  toggleSubscribed
 } = require("./controllers/event-controllers");
 const {
   invalidEndpoint,
@@ -121,6 +123,8 @@ app
   .route("/user/details/revokestaff")
   .patch(authenticateStaffToken, patchRemoveStaff);
 app.route("/events").post(authenticateStaffToken, postEvent);
+app.route("/event/checkSubscribed/:eventid").get(authenticateToken, checkSubscribed)
+app.route("/event/toggleSubscribed/:eventid").patch(authenticateToken, toggleSubscribed)
 app.all("*", invalidEndpoint);
 
 app.use(handleCustomError);

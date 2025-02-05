@@ -247,3 +247,41 @@ export function getEvent(eventid) {
       }
     });
 }
+
+export function checkSubscribed(eventid) {
+  return request
+    .get(`/event/checkSubscribed/${eventid}`)
+    .then(({ data }) => {
+      return data;
+    })
+    .catch((err) => {
+      if (err.response) {
+        throw new Error(
+          err.response.data?.msg || "An error occurred during the request."
+        );
+      } else {
+        throw new Error(
+          "An unexpected error occurred. Please try again later."
+        );
+      }
+    });
+}
+
+export function toggleSubscribe(eventid) {
+  return request
+    .patch(`/event/toggleSubscribed/${eventid}`)
+    .then(({ data }) => {
+      return data;
+    })
+    .catch((err) => {
+      if (err.response) {
+        throw new Error(
+          err.response.data?.msg || "An error occurred during the request."
+        );
+      } else {
+        throw new Error(
+          "An unexpected error occurred. Please try again later."
+        );
+      }
+    });
+}
