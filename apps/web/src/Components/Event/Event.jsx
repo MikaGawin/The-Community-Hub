@@ -19,7 +19,7 @@ import { useAuth } from "../Authentication/AuthContext";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import { checkSubscribed, toggleSubscribe } from "../../AxiosApi/axiosApi";
-import AddToCalendarButton from "../Events/AddToCalendarButton";
+import AddToCalendarButton from "./AddToCalendarButton";
 
 function Event() {
   const [event, setEvent] = useState({});
