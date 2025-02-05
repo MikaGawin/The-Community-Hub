@@ -135,3 +135,41 @@ exports.createEvent = ({
     return rows[0];
   });
 };
+
+exports.selectEventById = (eventid) => {
+  const sqlQuery = `SELECT * from events
+  WHERE event_id = $1;`;
+
+  return db.query(sqlQuery, [eventid]).then(({ rows }) => {
+    return rows;
+  });
+};
+
+exports.findEventsByUser = (eventId, userId) => {
+  const sqlQuery = `SELECT * from subscribed_events
+  WHERE event_id = $1 AND user_id = $2;`;
+
+  return db.query(sqlQuery, [eventId, userId]).then(({ rows }) => {
+    return rows;
+  });
+};
+
+exports.insertUserSubscribed = (eventId, userId) => {
+  const sqlQuery = `INSERT INTO subscribed_events (user_id, event_id)
+  VALUES ($1, $2)
+  RETURNING *`;
+
+  return db.query(sqlQuery, [userId, eventId]).then(({ rows }) => {
+    return rows;
+  });
+};
+
+exports.deleteUserSubscribed = (eventId, userId) => {
+  const sqlQuery = `DELETE FROM subscribed_events 
+                    WHERE user_id = $1 AND event_id = $2 
+                    RETURNING *`;
+
+  return db.query(sqlQuery, [userId, eventId]).then(({ rows }) => {
+    return rows;
+  });
+};

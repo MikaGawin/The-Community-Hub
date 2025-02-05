@@ -3,6 +3,10 @@ const {
   selectEventsCount,
   selectedUsersEvents,
   createEvent,
+  selectEventById,
+  findEventsByUser,
+  insertUserSubscribed,
+  deleteUserSubscribed
 } = require("../models/event-models");
 const upload = require("../utils/uploadConfig");
 const convertToTimestamp = require("../utils/combineDateAndTime");
@@ -66,12 +70,65 @@ exports.postEvent = (req, res, next) => {
     if (image) {
       eventData.image = image.path;
     }
-    
+
     createEvent(eventData)
       .then((event) => {
-        console.log(event);
         res.status(200).send({ event });
       })
       .catch(next);
   });
+};
+
+exports.getEventById = (req, res, next) => {
+  const eventid = req.params.eventid;
+  selectEventById(eventid)
+    .then((event) => {
+      if (!event[0]) {
+        res.status(404).send({ message: "event not found" });
+      } else res.status(200).send({ event: event[0] });
+    })
+    .catch(next);
+};
+
+exports.checkSubscribed = (req, res, next) => {
+  const eventId = req.params.eventid;
+  const userId = req.user.id;
+
+  findEventsByUser(eventId, userId)
+    .then((rows) => {
+      const subscribed = {};
+      if (rows.length > 0) {
+        subscribed.subscribed = true;
+      } else {
+        subscribed.subscribed = false;
+      }
+      res.status(200).send({ subscribed });
+    })
+    .catch(next);
+};
+exports.toggleSubscribed = (req, res, next) => {
+  const eventId = req.params.eventid;
+  const userId = req.user.id;
+
+  findEventsByUser(eventId, userId)
+    .then((rows) => {
+      if (rows.length > 0) {
+        deleteUserSubscribed(eventId, userId).then((rows) => {
+          if (rows.length > 0) {
+            res.status(200).send({ subscribed: false });
+          } else {
+            res.status(500).send({ error: "Failed to subscribe" });
+          }
+        });
+      } else {
+        insertUserSubscribed(eventId, userId).then((rows) => {
+          if (rows.length > 0) {
+            res.status(200).send({ subscribed: true });
+          } else {
+            res.status(500).send({ error: "Failed to unsubscribe" });
+          }
+        });
+      }
+    })
+    .catch(next);
 };

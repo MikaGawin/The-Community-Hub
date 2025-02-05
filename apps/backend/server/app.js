@@ -19,10 +19,15 @@ const {
   getEvents,
   getUserEvents,
   postEvent,
+  getEventById,
+  checkSubscribed,
+  toggleSubscribed
 } = require("./controllers/event-controllers");
 const {
   invalidEndpoint,
   internalServerError,
+  handleCustomError,
+  invalidQuery,
 } = require("./errorHandling/error-handlers");
 
 const app = express();
@@ -94,6 +99,7 @@ app.get("/", (req, res, next) => {
 });
 
 app.route("/events").get(getEvents);
+app.route("/event/${}");
 app.route("/register").post(postUser);
 app.route("/login").post(async (req, res, next) => {
   const { email, password } = req.body;
@@ -107,6 +113,7 @@ app.route("/login").post(async (req, res, next) => {
 });
 
 app.route("/user/password/:userid").patch(authenticateToken, patchUserPassword);
+app.route("/event/:eventid").get(getEventById)
 app.route("/user/events/:userId").get(authenticateToken, getUserEvents);
 app.route("/user/details").get(authenticateStaffToken, getUserByEmail);
 app
@@ -116,8 +123,12 @@ app
   .route("/user/details/revokestaff")
   .patch(authenticateStaffToken, patchRemoveStaff);
 app.route("/events").post(authenticateStaffToken, postEvent);
+app.route("/event/checkSubscribed/:eventid").get(authenticateToken, checkSubscribed)
+app.route("/event/toggleSubscribed/:eventid").patch(authenticateToken, toggleSubscribed)
 app.all("*", invalidEndpoint);
 
+app.use(handleCustomError);
+app.use(invalidQuery);
 app.use(internalServerError);
 
 module.exports = app;

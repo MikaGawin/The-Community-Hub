@@ -128,6 +128,9 @@ export function getUserByEmail(email) {
     })
     .catch((err) => {
       if (err.response) {
+        if ((err.response.msg = "No user found with this email.")) {
+          return {};
+        }
         throw new Error(
           err.response.data?.msg || "An error occurred during the request."
         );
@@ -141,7 +144,7 @@ export function getUserByEmail(email) {
 
 export function patchStaffStatus(userid) {
   return request
-    .patch(`user/details/makestaff/${userid}`)
+    .patch(`/user/details/makestaff/${userid}`)
     .then(({ data }) => {
       return data;
     })
@@ -209,7 +212,64 @@ export function postEvent({
 
 export function patchStaff() {
   return request
-    .patch("user/details/revokestaff")
+    .patch("/user/details/revokestaff")
+    .then(({ data }) => {
+      return data;
+    })
+    .catch((err) => {
+      if (err.response) {
+        throw new Error(
+          err.response.data?.msg || "An error occurred during the request."
+        );
+      } else {
+        throw new Error(
+          "An unexpected error occurred. Please try again later."
+        );
+      }
+    });
+}
+
+export function getEvent(eventid) {
+  return request
+    .get(`/event/${eventid}`)
+    .then(({ data }) => {
+      return data;
+    })
+    .catch((err) => {
+      if (err.response) {
+        throw new Error(
+          err.response.data?.msg || "An error occurred during the request."
+        );
+      } else {
+        throw new Error(
+          "An unexpected error occurred. Please try again later."
+        );
+      }
+    });
+}
+
+export function checkSubscribed(eventid) {
+  return request
+    .get(`/event/checkSubscribed/${eventid}`)
+    .then(({ data }) => {
+      return data;
+    })
+    .catch((err) => {
+      if (err.response) {
+        throw new Error(
+          err.response.data?.msg || "An error occurred during the request."
+        );
+      } else {
+        throw new Error(
+          "An unexpected error occurred. Please try again later."
+        );
+      }
+    });
+}
+
+export function toggleSubscribe(eventid) {
+  return request
+    .patch(`/event/toggleSubscribed/${eventid}`)
     .then(({ data }) => {
       return data;
     })
