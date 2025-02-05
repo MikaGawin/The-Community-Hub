@@ -3,6 +3,7 @@ const {
   selectEventsCount,
   selectedUsersEvents,
   createEvent,
+  selectEventById,
 } = require("../models/event-models");
 const upload = require("../utils/uploadConfig");
 const convertToTimestamp = require("../utils/combineDateAndTime");
@@ -66,12 +67,22 @@ exports.postEvent = (req, res, next) => {
     if (image) {
       eventData.image = image.path;
     }
-    
+
     createEvent(eventData)
       .then((event) => {
-        console.log(event);
         res.status(200).send({ event });
       })
       .catch(next);
   });
+};
+
+exports.getEventById = (req, res, next) => {
+  const eventid = req.params.eventid;
+  selectEventById(eventid)
+    .then((event) => {
+      if (!event[0]) {
+        res.status(404).send({ message: "event not found" });
+      } else res.status(200).send({ event: event[0] });
+    })
+    .catch(next);
 };

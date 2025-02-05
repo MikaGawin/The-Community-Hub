@@ -135,3 +135,12 @@ exports.createEvent = ({
     return rows[0];
   });
 };
+
+exports.selectEventById = (eventid) => {
+  const sqlQuery = `SELECT * from events
+  WHERE event_id = $1`;
+
+  return db.query(sqlQuery, [eventid]).then(({ rows }) => {
+    return rows;
+  });
+};

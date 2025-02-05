@@ -22,6 +22,7 @@ import CreateEvent from "./Components/Staff/CreateEvent";
 import Account from "./Components/User/Account";
 import MyEvents from "./Components/MyEvents/MyEvents";
 import NotFoundPage from "./Components/ErrorFeedback/NotFoundPage";
+import Event from "./Components/Event/Event";
 
 function App() {
   return (
@@ -64,14 +65,17 @@ function App() {
                 flexDirection: "column",
                 flexGrow: 1,
                 padding: "25px",
+                paddingTop: "10px",
+                paddingBottom: "10px"
               }}
             >
-              <main style={{ flexGrow: 1 }}>
+              <main style={{ flexGrow: 1}}>
                 <Routes>
                   <Route path="/" element={<Events />} />
                   <Route path="/search/:search" element={<Events />} />
                   <Route path="/login" element={<UserLogin />} />
                   <Route path="/signup" element={<UserCreateForm />} />
+                  <Route path="/event/:eventid" element={<Event />} />
                   <Route
                     path="/account/:userid"
                     element={
