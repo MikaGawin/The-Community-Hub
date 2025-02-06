@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { getUserByEmail, patchStaffStatus } from "../../AxiosApi/axiosApi";
 import { useAuth } from "../Authentication/AuthContext";
-import { Box, TextField, Button, CircularProgress, Typography } from "@mui/material";
+import { Box, TextField, Button, CircularProgress, Checkbox, Typography } from "@mui/material";
 
 function AddStaff() {
   const [email, setEmail] = useState("");

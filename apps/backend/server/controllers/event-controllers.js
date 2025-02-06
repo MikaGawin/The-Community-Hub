@@ -6,7 +6,9 @@ const {
   selectEventById,
   findEventsByUser,
   insertUserSubscribed,
-  deleteUserSubscribed
+  deleteUserSubscribed,
+  removeEventById,
+  changeEventById
 } = require("../models/event-models");
 const upload = require("../utils/uploadConfig");
 const convertToTimestamp = require("../utils/combineDateAndTime");
@@ -131,4 +133,59 @@ exports.toggleSubscribed = (req, res, next) => {
       }
     })
     .catch(next);
+};
+
+exports.deleteEventById = (req, res, next) => {
+  const eventId = req.params.eventid;
+  removeEventById(eventId)
+    .then(() => {
+      res.status(204).send();
+    })
+    .catch(next);
+};
+
+exports.patchEventById = (req, res, next) => {
+  const eventId = req.params.eventid;
+  upload.single("image")(req, res, (err) => {
+    if (err) {
+      return res.status(400).send({
+        msg: err.message || "An error occurred while uploading the image.",
+      });
+    }
+    const {
+      title,
+      location,
+      description,
+      startDate,
+      startTime,
+      endDate,
+      endTime,
+      fbEvent,
+      instaLink,
+    } = req.body;
+
+    const date = convertToTimestamp(startDate, startTime);
+    const finishDate = convertToTimestamp(endDate, endTime);
+    const image = req.file;
+
+    const eventData = {
+      title,
+      location,
+      description,
+      date,
+      finishDate,
+      fbEvent: fbEvent || null,
+      instaLink: instaLink || null,
+    };
+
+    if (image) {
+      eventData.image = image.path;
+    }
+
+    changeEventById(eventId, eventData)
+      .then((event) => {
+        res.status(200).send({ event });
+      })
+      .catch(next);
+  });
 };
