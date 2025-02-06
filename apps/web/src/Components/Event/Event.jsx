@@ -126,7 +126,7 @@ function Event() {
           setDeleteIsLoading(false);
           setShowConfirmDelete(false);
           showToast("Event deleted successfully.");
-          navigate("/events");
+          navigate("/");
         })
         .catch((err) => {
           setDeleteIsLoading(false);

@@ -21,7 +21,8 @@ const {
   postEvent,
   getEventById,
   checkSubscribed,
-  toggleSubscribed
+  toggleSubscribed,
+  deleteEventById,
 } = require("./controllers/event-controllers");
 const {
   invalidEndpoint,
@@ -93,13 +94,11 @@ app.use(cors());
 app.use(express.json());
 
 //routes
-
 app.get("/", (req, res, next) => {
   res.send("The app is working!").catch(next);
 });
 
 app.route("/events").get(getEvents);
-app.route("/event/${}");
 app.route("/register").post(postUser);
 app.route("/login").post(async (req, res, next) => {
   const { email, password } = req.body;
@@ -112,8 +111,12 @@ app.route("/login").post(async (req, res, next) => {
   }
 });
 
+
 app.route("/user/password/:userid").patch(authenticateToken, patchUserPassword);
-app.route("/event/:eventid").get(getEventById)
+app
+  .route("/event/:eventid")
+  .get(getEventById)
+  .delete(authenticateStaffToken, deleteEventById);
 app.route("/user/events/:userId").get(authenticateToken, getUserEvents);
 app.route("/user/details").get(authenticateStaffToken, getUserByEmail);
 app
@@ -123,8 +126,12 @@ app
   .route("/user/details/revokestaff")
   .patch(authenticateStaffToken, patchRemoveStaff);
 app.route("/events").post(authenticateStaffToken, postEvent);
-app.route("/event/checkSubscribed/:eventid").get(authenticateToken, checkSubscribed)
-app.route("/event/toggleSubscribed/:eventid").patch(authenticateToken, toggleSubscribed)
+app
+  .route("/event/checkSubscribed/:eventid")
+  .get(authenticateToken, checkSubscribed);
+app
+  .route("/event/toggleSubscribed/:eventid")
+  .patch(authenticateToken, toggleSubscribed);
 app.all("*", invalidEndpoint);
 
 app.use(handleCustomError);

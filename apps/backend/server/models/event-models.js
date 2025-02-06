@@ -173,3 +173,16 @@ exports.deleteUserSubscribed = (eventId, userId) => {
     return rows;
   });
 };
+
+exports.removeEventById = (eventId) => {
+  const sqlQuery = `DELETE FROM events WHERE event_id = $1;`;
+
+  return db.query(sqlQuery, [eventId]).then(({ rowCount }) => {
+    if (!rowCount) {
+      return Promise.reject({
+        msg: "Event not found",
+        status: 404,
+      });
+    }
+  });
+};

@@ -6,7 +6,8 @@ const {
   selectEventById,
   findEventsByUser,
   insertUserSubscribed,
-  deleteUserSubscribed
+  deleteUserSubscribed,
+  removeEventById,
 } = require("../models/event-models");
 const upload = require("../utils/uploadConfig");
 const convertToTimestamp = require("../utils/combineDateAndTime");
@@ -129,6 +130,15 @@ exports.toggleSubscribed = (req, res, next) => {
           }
         });
       }
+    })
+    .catch(next);
+};
+
+exports.deleteEventById = (req, res, next) => {
+  const eventId = req.params.eventid;
+  removeEventById(eventId)
+    .then(() => {
+      res.status(204).send();
     })
     .catch(next);
 };

@@ -288,7 +288,7 @@ export function toggleSubscribe(eventid) {
 
 export function deleteEvent(eventid) {
   return request
-    .delete(`event/${eventid}`)
+    .delete(`/event/${eventid}`)
     .then((response) => {})
     .catch((err) => {
       if (err.response) {
