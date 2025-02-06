@@ -55,6 +55,7 @@ function App() {
               height: "calc(100vh - 64px)",
               marginTop: "64px",
               minWidth: "250px",
+              padding:0
             }}
           >
             <Box
@@ -64,8 +65,8 @@ function App() {
                 display: "flex",
                 flexDirection: "column",
                 flexGrow: 1,
-                padding: "25px",
-                paddingTop: "10px",
+                padding: "0",
+                paddingTop: "0",
                 paddingBottom: "10px"
               }}
             >

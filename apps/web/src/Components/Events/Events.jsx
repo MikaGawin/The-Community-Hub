@@ -6,14 +6,17 @@ import EventCard from "./EventCard";
 import sortOptions from "../../utils/sortOptions";
 import { getEvents } from "../../AxiosApi/axiosApi";
 import PageSetter from "./PageSetter";
-import DateSelecter from "./DateSelecter";
+
 import ConnectionFailed from "../ErrorFeedback/ConnectionFailed";
+import { Grid, Box, Select, MenuItem, Typography } from "@mui/material";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 function Events() {
   const { search } = useParams();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const resultsPerPage = 20;
+  const resultsPerPage = 24;
   const [eventsData, setEventsData] = useState({
     events: [],
     eventCount: 0,
@@ -21,12 +24,7 @@ function Events() {
   const [isLoading, setIsLoading] = useState(true);
   const [connectSuccess, setConnectSuccess] = useState(true);
 
-  const [sortedBy, setSortedBy] = useState({
-    sortByText: "Event Date",
-    orderText: "Soonest - Furthest",
-    order: "asc",
-    sort_by: "date",
-  });
+  const [sortedBy, setSortedBy] = useState(sortOptions[0]);
 
   const [startDate, setStartDate] = useState(
     searchParams.get("startDate")
@@ -105,56 +103,133 @@ function Events() {
     newParams.set("sort_by", index);
     newParams.set("page", 1);
     setSearchParams(newParams);
+
+    setSortedBy(sortOptions[index]);
   }
 
-  if(!connectSuccess) {
-    return <ConnectionFailed />
+  if (!connectSuccess) {
+    return <ConnectionFailed />;
   }
 
   return (
     <>
-      <div id="sort-and-result-count">
-        <p id="result-count">
-          {isLoading ? (
-            <>Finding events</>
-          ) : (
-            <>
-              showing results {firstResultIndex} - {lastResultIndex} of{" "}
-              {eventsData.eventCount ? eventsData.eventCount : ""}
-            </>
-          )}
-        </p>
-
-        <select id="sort-selector" onChange={handleSelect}>
-          {sortOptions.map((option, index) => {
-            return (
-              <option key={index} value={index}>
-                {`${option.sortByText}: ${option.orderText}`}
+      <Box
+        sx={{
+          width: "100%",
+          justifyContent: "flex-end",
+          borderBottom: "1px solid #ddd",
+          padding: 2,
+          margin: "0",
+          backgroundColor: "grey.300",
+          boxSizing: "border-box",
+          display: "flex",
+          flexWrap: "wrap",
+          gap: 2,
+          textAlign: "center",
+          flexDirection: { xs: "column", md: "row" },
+          alignItems: { xs: "center", md: "flex-end" },
+        }}
+      >
+        <Box sx={{ width: "200px", flexShrink: 0 }}>
+          <Typography variant="body2" fontWeight="bold">
+            Sort By:
+          </Typography>
+          <select
+            id="sort-selector"
+            onChange={handleSelect}
+            value={`${sortedBy.sortByText}: ${sortedBy.orderText}`}
+            style={{
+              minWidth: "200px",
+            }}
+          >
+            {sortOptions.map((option, index) => (
+              <option
+                key={index}
+                value={`${option.sortByText}: ${option.orderText}`}
+              >
+                {option.sortByText}: {option.orderText}
               </option>
-            );
-          })}
-        </select>
-        <DateSelecter
-          startDate={startDate}
-          endDate={endDate}
-          handleDateChange={handleDateChange}
-        />
-      </div>
-      <div>
-        <ul>
-          {eventsData.events.map((event) => {
-            return <EventCard key={event.event_id} event={event} />;
-          })}
-        </ul>
-        <div id="page-selector">
+            ))}
+          </select>
+        </Box>
+
+        <Box sx={{ width: "200px", flexShrink: 0 }}>
+          <Typography variant="body2" fontWeight="bold">
+            Start Date:
+          </Typography>
+          <DatePicker
+            selected={startDate}
+            onChange={(date) => handleDateChange(date, endDate)}
+            selectsStart
+            startDate={startDate}
+            endDate={endDate}
+            placeholderText="Select a start date"
+            dateFormat="yyyy-MM-dd"
+            className="date-picker"
+          />
+        </Box>
+
+        <Box sx={{ width: "200px", flexShrink: 0 }}>
+          <Typography variant="body2" fontWeight="bold">
+            End Date:
+          </Typography>
+          <DatePicker
+            selected={endDate}
+            onChange={(date) => handleDateChange(startDate, date)}
+            selectsEnd
+            startDate={startDate}
+            endDate={endDate}
+            minDate={startDate}
+            placeholderText="Select an end date"
+            dateFormat="yyyy-MM-dd"
+            className="date-picker"
+          />
+        </Box>
+      </Box>
+
+      <Box p={2}>
+        <Typography
+          variant="body1"
+          sx={{ flex: "1 1 auto", minWidth: "250px" }}
+        >
+          {isLoading
+            ? "Finding events..."
+            : `Showing results ${
+                search ? `for ${search}` : ""
+              } ${firstResultIndex} - ${lastResultIndex} of ${
+                eventsData.eventCount
+              }`}
+        </Typography>
+
+        <Grid container spacing={3} justifyContent="center">
+          {eventsData.events.map((event) => (
+            <Grid
+              item
+              key={event.event_id}
+              lg={3}
+              xs={12}
+              sm={6}
+              md={4}
+              sx={{
+                minWidth: "320px",
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
+              <EventCard event={event} />
+            </Grid>
+          ))}
+        </Grid>
+
+        <Box mt={3} display="flex" justifyContent="center">
           <PageSetter
             page={page}
             searchParams={searchParams}
             setSearchParams={setSearchParams}
             totalPages={totalPages}
           />
-        </div>
-      </div>
+        </Box>
+      </Box>
     </>
   );
 }
