@@ -186,3 +186,57 @@ exports.removeEventById = (eventId) => {
     }
   });
 };
+
+exports.changeEventById = (
+  eventId,
+  {
+    title,
+    date,
+    finishDate,
+    location,
+    description,
+    fbEvent,
+    instaLink,
+    image = null,
+  }
+) => {
+  const pictures = image ? [`${image}`] : null;
+
+  const data = {
+    title,
+    date,
+    end_date: finishDate,
+    location,
+    text: description,
+    pictures: pictures ? `{${pictures.join(",")}}` : null,
+    fb_link: fbEvent || null,
+    instagram: instaLink || null,
+  };
+
+  let updateQueryStr = "UPDATE events SET ";
+
+  const updates = [];
+  const values = [];
+
+  Object.keys(data).forEach((key, index) => {
+    if (data[key] !== undefined && data[key] !== null) {
+      updates.push(`${key} = $${values.length + 1}`);
+      values.push(data[key]);
+    }
+  });
+
+  updateQueryStr +=
+    updates.join(", ") + ` WHERE event_id = $${values.length + 1} RETURNING *;`;
+  values.push(eventId);
+
+  return db.query(updateQueryStr, values).then(({ rows }) => {
+    if (!rows[0]) {
+      return Promise.reject({
+        status: 404,
+        msg: "event not found",
+      });
+    } else {
+      return rows[0];
+    }
+  });
+};

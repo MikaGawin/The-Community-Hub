@@ -14,7 +14,7 @@ import {
   Typography,
 } from "@mui/material";
 
-function EditEvent({ event, setEditing, eventId }) {
+function EditEvent({ event, setEditing, eventid }) {
   const { user, loading, logout, showToast } = useAuth();
   const [uploading, setUploading] = useState(false);
   const [formData, setFormData] = useState({
@@ -27,10 +27,10 @@ function EditEvent({ event, setEditing, eventId }) {
     endTime:
       new Date(`${event.endDate} ${event.endTime}`) ||
       new Date(new Date().getTime() + 5 * 60000),
-    sameAsStartDate: event.startDate === event.endDate, // Assuming this condition for same as start date
+    sameAsStartDate: event.startDate === event.endDate,
     fbEvent: event.fb_link || "",
     instaLink: event.instagram || "",
-    image: event.pictures?.[0] || null, // Assuming you're using the first image if available
+    image: event.pictures?.[0] || null,
   });
 
   const [imagePreview, setImagePreview] = useState(
@@ -164,7 +164,7 @@ function EditEvent({ event, setEditing, eventId }) {
     setGeneralError(null);
     if (validateForm()) {
       setUploading(true);
-      patchEvent(eventId, formData)
+      patchEvent(eventid, formData)
         .then((data) => {
           setUploading(false);
           if (data.message === "Invalid or expired token.") {

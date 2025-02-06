@@ -23,6 +23,7 @@ const {
   checkSubscribed,
   toggleSubscribed,
   deleteEventById,
+  patchEventById
 } = require("./controllers/event-controllers");
 const {
   invalidEndpoint,
@@ -116,6 +117,7 @@ app.route("/user/password/:userid").patch(authenticateToken, patchUserPassword);
 app
   .route("/event/:eventid")
   .get(getEventById)
+  .patch(authenticateStaffToken, patchEventById)
   .delete(authenticateStaffToken, deleteEventById);
 app.route("/user/events/:userId").get(authenticateToken, getUserEvents);
 app.route("/user/details").get(authenticateStaffToken, getUserByEmail);
