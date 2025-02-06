@@ -13,16 +13,22 @@ This is a community-driven events platform that allows users to browse, create, 
 
 ### Environment Variables
 Create a `.env.dev` file in the project root with the following variables:
+
+####
+Required
 ```env
 PGDATABASE=events_platform
+SECRET_KEY=your_secure_key
+CLOUD_NAME=your_cloudinary_name
+API_KEY=your_cloudinary_api_key
+API_SECRET=your_cloudinary_api_secret
+```
+optional pg credentials
+```env
 PGUSER=your_pg_user
 PGPASSWORD=your_pg_password
 PGHOST=your_pg_host
 PGPORT=your_pg_port
-SECRET_KEY=your_secure_key
-CLOUD_NAME=your_cloudinary_name
-API_KEY=your_cloudinary_api_key
-CAPI_SECRET=your_cloudinary_api_secret
 ```
 
 ### Setup Instructions
@@ -102,21 +108,21 @@ CAPI_SECRET=your_cloudinary_api_secret
 For testing, use the following test accounts:
 
 ### Superuser
-```json
-  email: alice@example.com
-  password: hashed_password_123
+```
+   email: alice@example.com
+   password: hashed_password_123
 ```
 
 ### Staff User
 ```
-email: bob@example.com
-password: hashed_password_456
+   email: bob@example.com
+   password: hashed_password_456
 ```
 
 ### Regular User
 ```
-email: charlie@example.com,
-password: "hashed_password_789
+   email: charlie@example.com,
+   password: "hashed_password_789
 ```
 
 ## Live Hosted Version
