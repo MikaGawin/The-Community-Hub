@@ -285,3 +285,20 @@ export function toggleSubscribe(eventid) {
       }
     });
 }
+
+export function deleteEvent(eventid) {
+  return request
+    .delete(`event/${eventid}`)
+    .then((response) => {})
+    .catch((err) => {
+      if (err.response) {
+        throw new Error(
+          err.response.data?.msg || "An error occurred during the request."
+        );
+      } else {
+        throw new Error(
+          "An unexpected error occurred. Please try again later."
+        );
+      }
+    });
+}

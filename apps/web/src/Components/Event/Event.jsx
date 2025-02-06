@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getEvent } from "../../AxiosApi/axiosApi";
+import { getEvent, deleteEvent } from "../../AxiosApi/axiosApi";
 import { useNavigate } from "react-router-dom";
 import extractDateTimeDuration from "../../utils/dateConverter";
 import React from "react";
@@ -11,6 +11,8 @@ import {
   Box,
   Button,
   CardMedia,
+  CircularProgress,
+  Checkbox,
 } from "@mui/material";
 import LinkIcon from "@mui/icons-material/Link";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
@@ -18,8 +20,10 @@ import placeholderImage from "../../assets/No-Image-Placeholder.svg";
 import { useAuth } from "../Authentication/AuthContext";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { checkSubscribed, toggleSubscribe } from "../../AxiosApi/axiosApi";
 import AddToCalendarButton from "./AddToCalendarButton";
+import EditIcon from "@mui/icons-material/Edit";
 
 function Event() {
   const [event, setEvent] = useState({});
@@ -29,6 +33,10 @@ function Event() {
   const { user, showToast, logout } = useAuth();
   const [subscribeIsLoading, setsubscribeIsLoading] = useState(false);
   const [userIsSubscribed, setUserIsSubscribed] = useState(false);
+  const [showConfirmDelete, setShowConfirmDelete] = useState(false);
+  const [isCheckedDelete, setIsCheckedDelete] = useState(false);
+  const [deleteIsLoading, setDeleteIsLoading] = useState(false);
+  const [deleteError, setDeleteError] = useState(null);
 
   function authFailed() {
     logout();
@@ -97,6 +105,42 @@ function Event() {
           setsubscribeIsLoading(false);
         });
     }
+  };
+
+  const handleDeleteClick = () => {
+    setShowConfirmDelete(true);
+  };
+
+  const handleCancelDelete = () => {
+    setShowConfirmDelete(false);
+    setIsCheckedDelete(false);
+    setDeleteError(null);
+  };
+
+  const handleConfirmDelete = () => {
+    if (isCheckedDelete) {
+      setDeleteError(null);
+      setDeleteIsLoading(true);
+      deleteEvent(eventid)
+        .then(() => {
+          setDeleteIsLoading(false);
+          setShowConfirmDelete(false);
+          showToast("Event deleted successfully.");
+          navigate("/events");
+        })
+        .catch((err) => {
+          setDeleteIsLoading(false);
+          if (err.message === "Invalid or expired token.") {
+            authFailed();
+          } else {
+            setDeleteError("An error occurred, please try again later.");
+          }
+        });
+    }
+  };
+
+  const handleEdit = (e) => {
+    e.preventDefault();
   };
 
   if (isLoading) return <>Finding event...</>;
@@ -210,7 +254,7 @@ function Event() {
             gap={2}
             mt={3}
             justifyContent={{ xs: "center", md: "flex-start" }}
-            flexDirection = {{ xs: "column", md: "row" }}
+            flexDirection={{ xs: "column", md: "row" }}
           >
             <Button
               variant="contained"
@@ -243,7 +287,111 @@ function Event() {
             >
               {subscribeIsLoading ? "Loading..." : "Subscribe"}
             </Button>
-            <AddToCalendarButton event={event}/>
+            <AddToCalendarButton event={event} />
+          </Box>
+          <Box
+            display="flex"
+            flexWrap="wrap"
+            gap={2}
+            mt={3}
+            justifyContent="center"
+            flexDirection={{ xs: "column", md: "row" }}
+          >
+            {user && user.staff && (
+              <>
+                {showConfirmDelete ? (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                    }} // Ensures proper stacking
+                  >
+                    <Typography
+                      variant="body2"
+                      textAlign="center"
+                      sx={{ marginBottom: 2 }}
+                    >
+                      Are you sure you want to delete this event? This action
+                      cannot be undone.
+                    </Typography>
+
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        marginBottom: 2,
+                      }}
+                    >
+                      <Checkbox
+                        checked={isCheckedDelete}
+                        onChange={(e) => setIsCheckedDelete(e.target.checked)}
+                      />
+                      <Typography variant="body2">Yes, I am sure</Typography>
+                    </Box>
+
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        gap: 2,
+                      }}
+                    >
+                      <Button
+                        variant="contained"
+                        color="error"
+                        onClick={handleConfirmDelete}
+                        disabled={!isCheckedDelete || deleteIsLoading}
+                      >
+                        {deleteIsLoading ? (
+                          <CircularProgress size={20} color="inherit" />
+                        ) : (
+                          "Delete"
+                        )}
+                      </Button>
+                      <Button
+                        variant="outlined"
+                        color="secondary"
+                        onClick={handleCancelDelete}
+                      >
+                        Cancel
+                      </Button>
+                    </Box>
+
+                    {deleteError && (
+                      <Typography
+                        variant="body2"
+                        color="error"
+                        sx={{ marginTop: 2, textAlign: "center" }}
+                      >
+                        {deleteError}
+                      </Typography>
+                    )}
+                  </Box>
+                ) : (
+                  <>
+                    <Button
+                      color="warning"
+                      variant="contained"
+                      startIcon={<EditIcon />}
+                      onClick={handleEdit}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Edit event
+                    </Button>
+                    <Button
+                      color="error"
+                      variant="contained"
+                      startIcon={<DeleteIcon />}
+                      onClick={handleDeleteClick}
+                    >
+                      Delete event
+                    </Button>
+                  </>
+                )}
+              </>
+            )}
           </Box>
         </CardContent>
       </Card>

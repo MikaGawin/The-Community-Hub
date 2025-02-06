@@ -1,6 +1,13 @@
 import { useAuth } from "../Authentication/AuthContext";
 import { useState } from "react";
 import { patchStaff } from "../../AxiosApi/axiosApi";
+import {
+  Box,
+  Button,
+  Checkbox,
+  CircularProgress,
+  Typography,
+} from "@mui/material";
 
 function StaffStatus() {
   const { user, loading, logout, showToast } = useAuth();
@@ -45,40 +52,100 @@ function StaffStatus() {
     }
   };
 
-  if (user.user_id === 1) {
-    return <p>Super user enabled</p>;
-  }
-
   return (
-    <div>
-      <p>Staff permissions enabled</p>
-      <button onClick={handleRevokeClick}>Give Up Staff Permissions</button>
-      {showConfirm && (
-        <div
-          style={{
-            border: "1px solid #ccc",
-            padding: "10px",
-            marginTop: "10px",
-          }}
-        >
-          <p>Are you sure you want to give up staff permissions?</p>
-          <label>
-            <input
-              type="checkbox"
-              checked={isChecked}
-              onChange={(e) => setIsChecked(e.target.checked)}
-            />
-            Yes, I am sure
-          </label>
-          <br />
-          <button onClick={handleConfirm} disabled={!isChecked}>
-            {isPatching ? "Loading..." : "Proceed"}
-          </button>
-          <button onClick={handleCancel}>Cancel</button>
-          {error && <p style={{ color: "red" }}>{error}</p>}
-        </div>
+    <>
+      <Typography variant="h5" sx={{ marginBottom: 2, textAlign: "center" }}>
+        Staff Status
+      </Typography>
+
+      {user.user_id === 1 ? (
+        <Typography variant="body1" color="success" textAlign="center">
+          Super user enabled
+        </Typography>
+      ) : (
+        <>
+          <Typography
+            variant="body1"
+            textAlign="center"
+            sx={{ marginBottom: 2 }}
+          >
+            Staff permissions enabled
+          </Typography>
+
+          {!showConfirm ? (
+            <Box sx={{ textAlign: "center" }}>
+              <Button
+                variant="outlined"
+                color="error"
+                onClick={handleRevokeClick}
+              >
+                Give Up Staff Permissions
+              </Button>
+            </Box>
+          ) : (
+            <>
+              <Typography
+                variant="body2"
+                textAlign="center"
+                sx={{ marginBottom: 2 }}
+              >
+                Are you sure you want to give up staff permissions?
+              </Typography>
+
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  gap: 1,
+                }}
+              >
+                <Checkbox
+                  checked={isChecked}
+                  onChange={(e) => setIsChecked(e.target.checked)}
+                />
+                <Typography variant="body2">Yes, I am sure</Typography>
+              </Box>
+
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  gap: 2,
+                  marginTop: 2,
+                }}
+              >
+                <Button
+                  variant="contained"
+                  color="error"
+                  onClick={handleConfirm}
+                  disabled={!isChecked || isPatching}
+                >
+                  {isPatching ? (
+                    <CircularProgress size={20} color="inherit" />
+                  ) : (
+                    "Proceed"
+                  )}
+                </Button>
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  onClick={handleCancel}
+                >
+                  Cancel
+                </Button>
+              </Box>
+
+              {error && (
+                <Typography variant="body2" color="error" sx={{ marginTop: 2 }}>
+                  {error}
+                </Typography>
+              )}
+            </>
+          )}
+        </>
       )}
-    </div>
+    </>
   );
 }
 
