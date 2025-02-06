@@ -168,7 +168,6 @@ function UserCreateForm() {
   }
 
   return (
-    <>
       <Box
         sx={{
           maxWidth: 600,
@@ -271,7 +270,7 @@ function UserCreateForm() {
           </Typography>
         )}
       </Box>
-    </>
+
   );
 }
 
