@@ -24,6 +24,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { checkSubscribed, toggleSubscribe } from "../../AxiosApi/axiosApi";
 import AddToCalendarButton from "./AddToCalendarButton";
 import EditIcon from "@mui/icons-material/Edit";
+import EditEvent from "../Staff/EditEvent";
 
 function Event() {
   const [event, setEvent] = useState({});
@@ -37,6 +38,7 @@ function Event() {
   const [isCheckedDelete, setIsCheckedDelete] = useState(false);
   const [deleteIsLoading, setDeleteIsLoading] = useState(false);
   const [deleteError, setDeleteError] = useState(null);
+  const [editing, setEditing] = useState(false);
 
   function authFailed() {
     logout();
@@ -73,7 +75,7 @@ function Event() {
         setIsLoading(false);
         navigate("/eventnotfound");
       });
-  }, [eventid]);
+  }, [eventid, editing]);
 
   useEffect(() => {
     if (user) {
@@ -141,9 +143,12 @@ function Event() {
 
   const handleEdit = (e) => {
     e.preventDefault();
+    setEditing(true);
   };
 
   if (isLoading) return <>Finding event...</>;
+
+if(editing) return <EditEvent eventid={eventid} event={event} setEditing={setEditing}/>
 
   return (
     <Box p={2}>
@@ -305,7 +310,7 @@ function Event() {
                       display: "flex",
                       flexDirection: "column",
                       alignItems: "center",
-                    }} // Ensures proper stacking
+                    }}
                   >
                     <Typography
                       variant="body2"

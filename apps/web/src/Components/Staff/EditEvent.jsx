@@ -3,7 +3,7 @@ import TextareaAutosize from "react-textarea-autosize";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useAuth } from "../Authentication/AuthContext";
-import { postEvent } from "../../AxiosApi/axiosApi";
+import { patchEvent } from "../../AxiosApi/axiosApi";
 import placeholderImage from "../../assets/No-Image-Placeholder.svg";
 import {
   Box,
@@ -13,26 +13,29 @@ import {
   CircularProgress,
   Typography,
 } from "@mui/material";
-import { useNavigate } from "react-router";
 
-function CreateEvent() {
+function EditEvent({ event, setEditing, eventId }) {
   const { user, loading, logout, showToast } = useAuth();
   const [uploading, setUploading] = useState(false);
   const [formData, setFormData] = useState({
-    title: "",
-    location: "",
-    description: "",
-    startDate: new Date(),
-    startTime: new Date(),
-    endDate: new Date(),
-    endTime: new Date(new Date().getTime() + 5 * 60000),
-    sameAsStartDate: false,
-    fbEvent: "",
-    instaLink: "",
-    image: null,
+    title: event.title || "",
+    location: event.location || "",
+    description: event.text || "",
+    startDate: new Date(event.startDate) || new Date(),
+    startTime: new Date(`${event.startDate} ${event.startTime}`) || new Date(),
+    endDate: new Date(event.endDate) || new Date(),
+    endTime:
+      new Date(`${event.endDate} ${event.endTime}`) ||
+      new Date(new Date().getTime() + 5 * 60000),
+    sameAsStartDate: event.startDate === event.endDate, // Assuming this condition for same as start date
+    fbEvent: event.fb_link || "",
+    instaLink: event.instagram || "",
+    image: event.pictures?.[0] || null, // Assuming you're using the first image if available
   });
-  const [imagePreview, setImagePreview] = useState(placeholderImage);
-  const navigate = useNavigate()
+
+  const [imagePreview, setImagePreview] = useState(
+    event.pictures?.[0] || placeholderImage
+  );
 
   function authFailed() {
     logout();
@@ -121,6 +124,10 @@ function CreateEvent() {
       );
     }
   };
+  const handleCancel = (e) => {
+    e.preventDefault();
+    setEditing(false);
+  };
 
   const validateForm = () => {
     let newErrors = {};
@@ -157,14 +164,13 @@ function CreateEvent() {
     setGeneralError(null);
     if (validateForm()) {
       setUploading(true);
-      postEvent(formData)
+      patchEvent(eventId, formData)
         .then((data) => {
           setUploading(false);
           if (data.message === "Invalid or expired token.") {
             authFailed();
           }
-          showToast("Event created")
-          navigate(`/event/${data.event.event_id}`)
+          setEditing(false);
         })
         .catch((err) => {
           if (err.message === "Invalid or expired token.") {
@@ -192,7 +198,7 @@ function CreateEvent() {
       }}
     >
       <Typography variant="h4" sx={{ marginBottom: 2, textAlign: "center" }}>
-        Create Event
+        Edit Event
       </Typography>
       <form onSubmit={handleSubmit}>
         <Box sx={{ marginBottom: 2 }}>
@@ -368,11 +374,22 @@ function CreateEvent() {
               src={imagePreview}
               alt="Preview"
               style={{ width: "200px", height: "auto" }}
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = placeholderImage;
+              }}
             />
           )}
         </Box>
 
-        <Box sx={{ marginTop: 3, textAlign: "center" }}>
+        <Box
+          sx={{
+            marginTop: 3,
+            display: "flex",
+            justifyContent: "center",
+            gap: 2,
+          }}
+        >
           <Button
             type="submit"
             variant="contained"
@@ -382,18 +399,31 @@ function CreateEvent() {
             {uploading ? (
               <CircularProgress size={24} color="inherit" />
             ) : (
-              "Create Event"
+              "Edit Event"
             )}
           </Button>
-          {generalError && (
-            <Typography variant="body2" color="error" sx={{ marginTop: 2 }}>
-              {generalError}
-            </Typography>
-          )}
+          <Button
+            onClick={handleCancel}
+            variant="contained"
+            color="primary"
+            disabled={uploading}
+          >
+            Cancel
+          </Button>
         </Box>
+        {generalError && (
+          <Typography
+            variant="body2"
+            textAlign="center"
+            color="error"
+            sx={{ marginTop: 2 }}
+          >
+            {generalError}
+          </Typography>
+        )}
       </form>
     </Box>
   );
 }
 
-export default CreateEvent;
+export default EditEvent;
