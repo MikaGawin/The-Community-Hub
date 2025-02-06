@@ -136,6 +136,7 @@ function Events() {
           </Typography>
           <select
             id="sort-selector"
+            aria-label="Sort options"
             onChange={handleSelect}
             value={`${sortedBy.sortByText}: ${sortedBy.orderText}`}
             style={{
