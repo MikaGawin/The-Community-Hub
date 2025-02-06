@@ -5,7 +5,7 @@ exports.selectEvents = ({
   startDate,
   latestDate,
   search,
-  sortBy,
+  sort_by,
   page = 1,
   limit = 20,
   sortOrder = "ASC",
@@ -47,12 +47,12 @@ exports.selectEvents = ({
   }
 
   const validSortColumns = ["date", "title", "location"];
-  if (!validSortColumns.includes(sortBy)) {
-    sortBy = "search_priority";
+  if (!validSortColumns.includes(sort_by)) {
+    sort_by = "search_priority";
     sortOrder = "ASC";
   }
 
-  sqlQuery += ` ORDER BY ${sortBy} ${sortOrder}`;
+  sqlQuery += ` ORDER BY ${sort_by} ${sortOrder}`;
 
   sqlQuery += ` LIMIT $${queries.length + 1} OFFSET $${queries.length + 2}`;
   queries.push(limit, offset);

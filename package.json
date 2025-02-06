@@ -6,9 +6,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start-server": "node apps/backend/listen.js",
+    "setup-dbs": "psql -f apps/backend/db/setup.sql",
+    "seed": "node apps/backend/db/run-seed.js",
     "seed-prod": "NODE_ENV=production node ./apps/backend/db/run-seed.js",
-    "run-web-local": "NODE_ENV=development npx vite --config ./apps/web/vite.config.js --mode development",
-    "show-vite-envvariables": "NODE_ENV=development node showVite.js"
+    "server-local": "NODE_ENV=development npx vite --config ./apps/web/vite.config.js --mode development"
   },
   "keywords": [],
   "author": "",

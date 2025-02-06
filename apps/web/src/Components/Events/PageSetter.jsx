@@ -21,13 +21,6 @@ function PageSetter({ searchParams, setSearchParams, page, totalPages }) {
       page={currentPage}
       count={currentTotal}
       onChange={handlePageChange}
-      // renderItem={(item) => (
-      //   <PaginationItem
-      //     component={Link}
-      //     to={`${item.page === 1 ? '' : `?page=${item.page}`}`}
-      //     {...item}
-      //   />
-      // )}
     />
   );
 }

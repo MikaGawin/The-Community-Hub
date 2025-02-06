@@ -9,8 +9,6 @@ function UserLogin() {
   const location = useLocation();
   const { login } = useAuth();
   const [userInput, setUserInput] = useState({
-    // Email: "",
-    // Password: "",
     Email: "alice@example.com",
     Password: "hashed_password_123",
   });

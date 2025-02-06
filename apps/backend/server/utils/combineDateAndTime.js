@@ -6,7 +6,7 @@ function convertToTimestamp(dateString, timeString) {
   const date = new Date(dateString);
   const time = new Date(timeString);
 
-  const formattedDate = date.toISOString().split("T")[0]; // "2025-02-14"
+  const formattedDate = date.toISOString().split("T")[0];
 
   const hours = time.getHours().toString().padStart(2, "0");
   const minutes = time.getMinutes().toString().padStart(2, "0");

@@ -24,7 +24,19 @@ function Events() {
   const [isLoading, setIsLoading] = useState(true);
   const [connectSuccess, setConnectSuccess] = useState(true);
 
-  const [sortedBy, setSortedBy] = useState(sortOptions[0]);
+  const allSortOptions = search
+    ? [
+        {
+          sortByText: "Relevance",
+          orderText: "",
+          order: "asc",
+          sort_by: "search_priority",
+        },
+        ...sortOptions,
+      ]
+    : sortOptions;
+
+  const [sortedBy, setSortedBy] = useState(allSortOptions[0]);
 
   const [startDate, setStartDate] = useState(
     searchParams.get("startDate")
@@ -73,7 +85,7 @@ function Events() {
 
   useEffect(() => {
     if (sortState !== null) {
-      setSortedBy(sortOptions[sortState]);
+      setSortedBy(allSortOptions[sortState]);
     }
   }, [sortState]);
 
@@ -82,7 +94,7 @@ function Events() {
     getEvents({
       page,
       sort_by: sortedBy.sort_by,
-      order: sortedBy.order,
+      sortOrder: sortedBy.order,
       search,
       resultsPerPage,
       startDate,
@@ -98,15 +110,13 @@ function Events() {
   }, [sortedBy, page, search, startDate, endDate]);
 
   function handleSelect(event) {
-    const index = event.target.value;
+    const index = event.target.selectedIndex;
     const newParams = new URLSearchParams(searchParams);
+    setSearchParams(newParams);
     newParams.set("sort_by", index);
     newParams.set("page", 1);
-    setSearchParams(newParams);
-
-    setSortedBy(sortOptions[index]);
+    setSortedBy(allSortOptions[index]);
   }
-
   if (!connectSuccess) {
     return <ConnectionFailed />;
   }
@@ -143,7 +153,7 @@ function Events() {
               minWidth: "200px",
             }}
           >
-            {sortOptions.map((option, index) => (
+            {allSortOptions.map((option, index) => (
               <option
                 key={index}
                 value={`${option.sortByText}: ${option.orderText}`}
