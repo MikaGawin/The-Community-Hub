@@ -9,13 +9,14 @@ import InputBase from "@mui/material/InputBase";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
-import HomeIcon from '@mui/icons-material/Home';
+import HomeIcon from "@mui/icons-material/Home";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useAuth } from "../Authentication/AuthContext";
+import { useLocation } from "react-router-dom";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -57,6 +58,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function CombinedAppBar() {
+  const location = useLocation();
   const { user, logout } = useAuth();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
@@ -89,6 +91,11 @@ export default function CombinedAppBar() {
 
   const handleMobileMenuOpen = (event) => {
     setMobileMoreAnchorEl(event.currentTarget);
+  };
+
+  const handleLoginClick = (event) => {
+    event.preventDefault();
+    navigate("/login", { state: { from: location }, replace: true });
   };
 
   const menuId = "primary-search-account-menu";
@@ -161,7 +168,9 @@ export default function CombinedAppBar() {
           <MenuItem onClick={() => navigate(`/account/${user.user_id}`)}>
             <Typography variant="body1">My Account</Typography>
           </MenuItem>
-          <MenuItem onClick={() => navigate(`/account/subscribed/${user.user_id}`)}>
+          <MenuItem
+            onClick={() => navigate(`/account/subscribed/${user.user_id}`)}
+          >
             <Typography variant="body1">My Events</Typography>
           </MenuItem>
           {user.staff && (
@@ -184,7 +193,7 @@ export default function CombinedAppBar() {
           </MenuItem>
         </>
       ) : (
-        <MenuItem onClick={() => navigate("/login")}>
+        <MenuItem onClick={handleLoginClick}>
           <Typography variant="body1">Login</Typography>
         </MenuItem>
       )}
@@ -209,18 +218,18 @@ export default function CombinedAppBar() {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar sx={{ minHeight: "64px !important" }}>
-        <Box sx={{ display: { xs: "flex", sm: "none" } }}>
-                  <IconButton
-                    size="large"
-                    aria-label="home"
-                    aria-controls={mobileMenuId}
-                    aria-haspopup="true"
-                    onClick={returnHome}
-                    color="inherit"
-                  >
-                    <HomeIcon />
-                  </IconButton>
-                </Box>
+          <Box sx={{ display: { xs: "flex", sm: "none" } }}>
+            <IconButton
+              size="large"
+              aria-label="home"
+              aria-controls={mobileMenuId}
+              aria-haspopup="true"
+              onClick={returnHome}
+              color="inherit"
+            >
+              <HomeIcon />
+            </IconButton>
+          </Box>
           <Typography
             onClick={returnHome}
             variant="h6"
@@ -286,7 +295,7 @@ export default function CombinedAppBar() {
                   color: "inherit",
                   "&:hover": { textDecoration: "underline" },
                 }}
-                onClick={() => navigate("/login")}
+                onClick={handleLoginClick}
               >
                 Sign in
               </Typography>

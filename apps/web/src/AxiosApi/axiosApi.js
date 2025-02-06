@@ -1,8 +1,8 @@
 import axios from "axios";
 import { useAuth } from "../Components/Authentication/AuthContext";
-
+import { baseURL } from "../../../../requestUrl";
 const request = axios.create({
-  baseURL: "http://localhost:9090/",
+  baseURL,
 });
 
 request.interceptors.request.use((req) => {
@@ -303,18 +303,21 @@ export function deleteEvent(eventid) {
     });
 }
 
-export function patchEvent(eventid, {
-  title,
-  location,
-  description,
-  startDate,
-  startTime,
-  endDate,
-  endTime,
-  fbEvent,
-  instaLink,
-  image,
-}) {
+export function patchEvent(
+  eventid,
+  {
+    title,
+    location,
+    description,
+    startDate,
+    startTime,
+    endDate,
+    endTime,
+    fbEvent,
+    instaLink,
+    image,
+  }
+) {
   const formData = new FormData();
 
   formData.append("title", title);
