@@ -4,6 +4,15 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useAuth } from "../Authentication/AuthContext";
 import { postEvent } from "../../AxiosApi/axiosApi";
+import placeholderImage from "../../assets/No-Image-Placeholder.svg";
+import {
+  Box,
+  TextField,
+  Checkbox,
+  Button,
+  CircularProgress,
+  Typography,
+} from "@mui/material";
 
 function CreateEvent() {
   const { user, loading, logout, showToast } = useAuth();
@@ -21,7 +30,7 @@ function CreateEvent() {
     instaLink: "",
     image: null,
   });
-  const [imagePreview, setImagePreview] = useState(null);
+  const [imagePreview, setImagePreview] = useState(placeholderImage);
 
   function authFailed() {
     logout();
@@ -114,9 +123,15 @@ function CreateEvent() {
   const validateForm = () => {
     let newErrors = {};
     if (!formData.title) newErrors.title = "Title is required.";
+    if (formData.title.length > 100)
+      newErrors.title = "Title must be less than 100 characters.";
     if (!formData.location) newErrors.location = "Location is required.";
+    if (formData.location.length > 150)
+      newErrors.location = "Location must be less than 150 characters.";
     if (!formData.description)
       newErrors.description = "Description is required.";
+    if (formData.description.length < 50)
+      newErrors.description = "Description must be at least 50 characters.";
     if (!formData.startDate) newErrors.startDate = "Start date is required.";
     if (!formData.startTime) newErrors.startTime = "Start time is required.";
     if (!formData.endDate) newErrors.endDate = "End date is required.";
@@ -161,54 +176,82 @@ function CreateEvent() {
   if (loading) return <p>Loading...</p>;
 
   return (
-    <div>
-      <h2>Create Event</h2>
+    <Box
+      sx={{
+        maxWidth: 800,
+        margin: "0 auto",
+        padding: 3,
+        backgroundColor: "white",
+        boxShadow: 3,
+        borderRadius: 2,
+        marginTop: { xs: 0, sm: "1rem", md: "5rem" },
+      }}
+    >
+      <Typography variant="h4" sx={{ marginBottom: 2, textAlign: "center" }}>
+        Create Event
+      </Typography>
       <form onSubmit={handleSubmit}>
-        <div>
-          <label>Title *</label>
-          <input
+        <Box sx={{ marginBottom: 2 }}>
+          <Typography variant="body1">Title *</Typography>
+          <TextField
             type="text"
             value={formData.title}
             onChange={(e) => handleChange("title", e.target.value)}
+            fullWidth
+            error={!!errors.title}
+            helperText={errors.title}
           />
-          {errors.title && <p style={{ color: "red" }}>{errors.title}</p>}
-        </div>
+        </Box>
 
-        <div>
-          <label>Location *</label>
+        <Box sx={{ marginBottom: 2 }}>
+          <Typography variant="body1">Location *</Typography>
           <TextareaAutosize
+            minRows={3}
             value={formData.location}
             onChange={(e) => handleChange("location", e.target.value)}
+            style={{ width: "100%", resize: "none" }}
           />
-          {errors.location && <p style={{ color: "red" }}>{errors.location}</p>}
-        </div>
+          {errors.location && (
+            <Typography variant="body2" color="error">
+              {errors.location}
+            </Typography>
+          )}
+        </Box>
 
-        <div>
-          <label>Description *</label>
+        <Box sx={{ marginBottom: 2 }}>
+          <Typography variant="body1">Description *</Typography>
           <TextareaAutosize
+            minRows={4}
             value={formData.description}
             onChange={(e) => handleChange("description", e.target.value)}
+            style={{ width: "100%", resize: "none" }}
           />
           {errors.description && (
-            <p style={{ color: "red" }}>{errors.description}</p>
+            <Typography variant="body2" color="error">
+              {errors.description}
+            </Typography>
           )}
-        </div>
+        </Box>
 
-        <div>
-          <label>Start Date *</label>
+        <Box sx={{ marginBottom: 2 }}>
+          <Typography variant="body1">Start Date *</Typography>
           <DatePicker
             selected={formData.startDate}
             onChange={handleStartDateChange}
             minDate={new Date()}
             dateFormat="dd/MM/yyyy"
+            customInput={
+              <TextField
+                fullWidth
+                error={!!errors.startDate}
+                helperText={errors.startDate}
+              />
+            }
           />
-          {errors.startDate && (
-            <p style={{ color: "red" }}>{errors.startDate}</p>
-          )}
-        </div>
+        </Box>
 
-        <div>
-          <label>Start Time *</label>
+        <Box sx={{ marginBottom: 2 }}>
+          <Typography variant="body1">Start Time *</Typography>
           <DatePicker
             selected={formData.startTime}
             onChange={handleStartTimeChange}
@@ -219,34 +262,44 @@ function CreateEvent() {
             dateFormat="HH:mm"
             minTime={new Date(0, 0, 0, 0, 5)}
             maxTime={new Date(0, 0, 0, 23, 59)}
+            customInput={
+              <TextField
+                fullWidth
+                error={!!errors.startTime}
+                helperText={errors.startTime}
+              />
+            }
           />
-          {errors.startTime && (
-            <p style={{ color: "red" }}>{errors.startTime}</p>
-          )}
-        </div>
+        </Box>
 
-        <div>
-          <label>End Date *</label>
+        <Box sx={{ marginBottom: 2 }}>
+          <Typography variant="body1">End Date *</Typography>
           <DatePicker
             disabled={formData.sameAsStartDate}
             selected={formData.endDate}
             onChange={handleEndDateChange}
             minDate={formData.startDate}
             dateFormat="dd/MM/yyyy"
+            customInput={
+              <TextField
+                fullWidth
+                error={!!errors.endDate}
+                helperText={errors.endDate}
+              />
+            }
           />
-          <label>
-            <input
-              type="checkbox"
+          <Box sx={{ display: "flex", alignItems: "center", marginTop: 1 }}>
+            <Checkbox
               checked={formData.sameAsStartDate}
               onChange={handleSameAsStartDateChange}
+              color="primary"
             />
-            Same as Start Date
-          </label>
-          {errors.endDate && <p style={{ color: "red" }}>{errors.endDate}</p>}
-        </div>
+            <Typography variant="body2">Same as Start Date</Typography>
+          </Box>
+        </Box>
 
-        <div>
-          <label>End Time *</label>
+        <Box sx={{ marginBottom: 2 }}>
+          <Typography variant="body1">End Time *</Typography>
           <DatePicker
             selected={formData.endTime}
             onChange={(time) => handleChange("endTime", time)}
@@ -261,58 +314,81 @@ function CreateEvent() {
                 : new Date(formData.startTime.getTime() + 5 * 60000)
             }
             maxTime={new Date(0, 0, 0, 23, 59)}
+            customInput={
+              <TextField
+                fullWidth
+                error={!!errors.endTime}
+                helperText={errors.endTime}
+              />
+            }
           />
-          {errors.endTime && <p style={{ color: "red" }}>{errors.endTime}</p>}
-        </div>
+        </Box>
 
-        <div>
-          <label>Facebook Event Link</label>
-          <input
+        <Box sx={{ marginBottom: 2 }}>
+          <Typography variant="body1">Facebook Event Link</Typography>
+          <TextField
             type="text"
             value={formData.fbEvent}
             onChange={(e) => handleChange("fbEvent", e.target.value)}
+            fullWidth
+            error={!!errors.fbEvent}
+            helperText={errors.fbEvent}
           />
-          {errors.fbEvent && <p style={{ color: "red" }}>{errors.fbEvent}</p>}
-        </div>
+        </Box>
 
-        <div>
-          <label>Instagram Link</label>
-          <input
+        <Box sx={{ marginBottom: 2 }}>
+          <Typography variant="body1">Instagram Link</Typography>
+          <TextField
             type="text"
             value={formData.instaLink}
             onChange={(e) => handleChange("instaLink", e.target.value)}
+            fullWidth
+            error={!!errors.instaLink}
+            helperText={errors.instaLink}
           />
-          {errors.instaLink && (
-            <p style={{ color: "red" }}>{errors.instaLink}</p>
-          )}
-        </div>
+        </Box>
 
-        <div>
-          <label>Event Image</label>
+        <Box sx={{ marginBottom: 2 }}>
+          <Typography variant="body1">Event Image</Typography>
           <input
             type="file"
             accept="image/png, image/jpeg, image/jpg"
             onChange={(e) => handleChange("image", e.target.files[0])}
           />
-        </div>
-        {imagePreview && (
-          <div>
+        </Box>
+
+        <Box sx={{ marginBottom: 2 }}>
+          <Typography variant="body2">Image Preview</Typography>
+          {imagePreview && (
             <img
               src={imagePreview}
               alt="Preview"
               style={{ width: "200px", height: "auto" }}
             />
-          </div>
-        )}
+          )}
+        </Box>
 
-        <div>
-          <button type="submit">
-            {uploading ? "Loading..." : "Create event"}
-          </button>
-          {generalError && <p style={{ color: "red" }}>{generalError}</p>}
-        </div>
+        <Box sx={{ marginTop: 3, textAlign: "center" }}>
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            disabled={uploading}
+          >
+            {uploading ? (
+              <CircularProgress size={24} color="inherit" />
+            ) : (
+              "Create Event"
+            )}
+          </Button>
+          {generalError && (
+            <Typography variant="body2" color="error" sx={{ marginTop: 2 }}>
+              {generalError}
+            </Typography>
+          )}
+        </Box>
       </form>
-    </div>
+    </Box>
   );
 }
 
