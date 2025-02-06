@@ -16,7 +16,7 @@ function UserCreateForm() {
   const [emailError, setEmailError] = useState("");
   const [hasPasswordError, setHasPasswordError] = useState(false);
   const [passwordError, setPasswordError] = useState("");
-  const [hasRepeatPasswordError, setHasRepeatPasswordError] = useState(false); // State for repeat password error
+  const [hasRepeatPasswordError, setHasRepeatPasswordError] = useState(false);
   const [repeatPasswordError, setRepeatPasswordError] = useState("");
   const [hasForenameError, setHasForenameError] = useState(false);
   const [forenameError, setForenameError] = useState(false);
