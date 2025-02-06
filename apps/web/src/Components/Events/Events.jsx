@@ -6,7 +6,7 @@ import EventCard from "./EventCard";
 import sortOptions from "../../utils/sortOptions";
 import { getEvents } from "../../AxiosApi/axiosApi";
 import PageSetter from "./PageSetter";
-
+import React from "react";
 import ConnectionFailed from "../ErrorFeedback/ConnectionFailed";
 import { Grid, Box, Typography } from "@mui/material";
 import DatePicker from "react-datepicker";
@@ -36,7 +36,14 @@ function Events() {
       ]
     : sortOptions;
 
-  const [sortedBy, setSortedBy] = useState(allSortOptions[0]);
+  const [sortedBy, setSortedBy] = useState(()=>{
+    const sortIndex = searchParams.get("sort_by")? searchParams.get("sort_by") : 0
+    return allSortOptions[sortIndex];
+  })
+
+  useEffect(()=> {
+    setSortedBy(allSortOptions[0])
+  }, [search])
 
   const [startDate, setStartDate] = useState(
     searchParams.get("startDate")
@@ -112,14 +119,18 @@ function Events() {
   function handleSelect(event) {
     const index = event.target.selectedIndex;
     const newParams = new URLSearchParams(searchParams);
-    setSearchParams(newParams);
     newParams.set("sort_by", index);
     newParams.set("page", 1);
+    setSearchParams(newParams);
     setSortedBy(allSortOptions[index]);
   }
   if (!connectSuccess) {
     return <ConnectionFailed />;
   }
+
+  const CustomInput = React.forwardRef(({ value, onClick }, ref) => (
+    <input value={value} onClick={onClick} readOnly className="date-picker" />
+  ));
 
   return (
     <>
@@ -169,6 +180,7 @@ function Events() {
             Start Date:
           </Typography>
           <DatePicker
+            customInput={<CustomInput />}
             selected={startDate}
             onChange={(date) => handleDateChange(date, endDate)}
             selectsStart
@@ -185,6 +197,7 @@ function Events() {
             End Date:
           </Typography>
           <DatePicker
+            customInput={<CustomInput />}
             selected={endDate}
             onChange={(date) => handleDateChange(startDate, date)}
             selectsEnd

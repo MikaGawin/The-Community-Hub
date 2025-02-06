@@ -32,7 +32,7 @@ function CreateEvent() {
     image: null,
   });
   const [imagePreview, setImagePreview] = useState(placeholderImage);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   function authFailed() {
     logout();
@@ -163,8 +163,8 @@ function CreateEvent() {
           if (data.message === "Invalid or expired token.") {
             authFailed();
           }
-          showToast("Event created")
-          navigate(`/event/${data.event.event_id}`)
+          showToast("Event created");
+          navigate(`/event/${data.event.event_id}`);
         })
         .catch((err) => {
           if (err.message === "Invalid or expired token.") {
@@ -176,6 +176,10 @@ function CreateEvent() {
         });
     }
   };
+
+  const CustomInput = React.forwardRef(({ value, onClick }, ref) => (
+    <TextField value={value} onClick={onClick} readOnly fullWidth />
+  ));
 
   if (loading) return <p>Loading...</p>;
 
@@ -244,13 +248,7 @@ function CreateEvent() {
             onChange={handleStartDateChange}
             minDate={new Date()}
             dateFormat="dd/MM/yyyy"
-            customInput={
-              <TextField
-                fullWidth
-                error={!!errors.startDate}
-                helperText={errors.startDate}
-              />
-            }
+            customInput={<CustomInput />}
           />
         </Box>
 
@@ -266,13 +264,7 @@ function CreateEvent() {
             dateFormat="HH:mm"
             minTime={new Date(0, 0, 0, 0, 5)}
             maxTime={new Date(0, 0, 0, 23, 59)}
-            customInput={
-              <TextField
-                fullWidth
-                error={!!errors.startTime}
-                helperText={errors.startTime}
-              />
-            }
+            customInput={<CustomInput />}
           />
         </Box>
 
@@ -284,13 +276,7 @@ function CreateEvent() {
             onChange={handleEndDateChange}
             minDate={formData.startDate}
             dateFormat="dd/MM/yyyy"
-            customInput={
-              <TextField
-                fullWidth
-                error={!!errors.endDate}
-                helperText={errors.endDate}
-              />
-            }
+            customInput={<CustomInput />}
           />
           <Box sx={{ display: "flex", alignItems: "center", marginTop: 1 }}>
             <Checkbox
@@ -318,13 +304,7 @@ function CreateEvent() {
                 : new Date(formData.startTime.getTime() + 5 * 60000)
             }
             maxTime={new Date(0, 0, 0, 23, 59)}
-            customInput={
-              <TextField
-                fullWidth
-                error={!!errors.endTime}
-                helperText={errors.endTime}
-              />
-            }
+            customInput={<CustomInput />}
           />
         </Box>
 

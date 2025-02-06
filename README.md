@@ -81,7 +81,7 @@ PGPORT=your_pg_port
 3. Deploy using [Render](https://render.com/), ensuring `.env.production` variables are included.
 
 ### Frontend Hosting
-1. Ensure your Google Cloud project is set up and environment variables are configured in `.env`.
+1. Ensure your Google Cloud project is set up and environment variables are configured in `.env` as above.
 2. Update `requestUrl.js` with the hosted backend URL:
    ```js
    export const baseURL = "your_hosted_backend_url";
