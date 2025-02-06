@@ -2,7 +2,7 @@ import { useState } from "react";
 import { requestUserToken } from "../../AxiosApi/axiosApi";
 import { useAuth } from "../Authentication/AuthContext";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { CircularProgress } from "@mui/material";
+import { Box, TextField, Button, CircularProgress, Typography } from "@mui/material";
 
 function UserLogin() {
   const navigate = useNavigate();
@@ -77,43 +77,77 @@ function UserLogin() {
   }
 
   return (
-    <>
-      <h1>
-        <form onSubmit={handleSubmit}>
-          <div>
-            <input
-              value={userInput.Email}
-              onChange={handleChange}
-              id="Email"
-              name="Email"
-              placeholder="Email"
-            />
-            {hasEmailError ? <>{emailError}</> : null}
-          </div>
-          <div>
-            <input
-              value={userInput.Password}
-              onChange={handleChange}
-              type="password"
-              id="Password"
-              name="Password"
-              placeholder="Password"
-            />
-            {hasPasswordError ? <>Password is required</> : null}
-          </div>
-          {loginError ? <p>{loginError}</p> : null}
-          <button>
-            {loginIsProcessing === true ? (
-              <CircularProgress size={20} />
-            ) : (
-              <>Submit</>
-            )}
-          </button>
-          {connectionError && <p style={{ color: "red" }}>Failed to connect to server please try again later</p>}
-        </form>
-        <Link to="/signup">Sign Up</Link>
-      </h1>
-    </>
+    <Box
+    sx={{
+      maxWidth: 600,
+      margin: "0 auto",
+      padding: 3,
+      backgroundColor: "white",
+      boxShadow: 3,
+      borderRadius: 2,
+      marginTop: { xs: 0, sm: "1rem", md: "5rem" },
+    }}
+  >
+    <Typography variant="h4" sx={{ marginBottom: 2, textAlign: "center" }}>
+      Sign In
+    </Typography>
+    <form onSubmit={handleSubmit}>
+      <Box sx={{ marginBottom: 2 }}>
+        <TextField
+          value={userInput.Email}
+          onChange={handleChange}
+          id="Email"
+          name="Email"
+          label="Email"
+          fullWidth
+          error={hasEmailError}
+          helperText={hasEmailError ? emailError : ""}
+        />
+      </Box>
+      <Box sx={{ marginBottom: 2 }}>
+        <TextField
+          value={userInput.Password}
+          onChange={handleChange}
+          type="password"
+          id="Password"
+          name="Password"
+          label="Password"
+          fullWidth
+          error={hasPasswordError}
+          helperText={hasPasswordError ? "Password is required" : ""}
+        />
+      </Box>
+      {loginError && (
+        <Typography variant="body2" color="error" sx={{ textAlign: "center", marginTop: 2 }}>
+          {loginError}
+        </Typography>
+      )}
+      <Box sx={{ textAlign: "center", marginBottom: 2 }}>
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          fullWidth
+          disabled={loginIsProcessing}
+        >
+          {loginIsProcessing ? (
+            <CircularProgress size={24} color="inherit" />
+          ) : (
+            "Submit"
+          )}
+        </Button>
+      </Box>
+      {connectionError && (
+        <Typography variant="body2" color="error" sx={{ textAlign: "center", marginTop: 2 }}>
+          Failed to connect to the server. Please try again later.
+        </Typography>
+      )}
+    </form>
+    <Typography variant="body2" sx={{ textAlign: "center", marginTop: 2 }}>
+      <Link to="/signup">Sign Up</Link>
+    </Typography>
+  </Box>
+
   );
 }
 

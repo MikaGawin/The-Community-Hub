@@ -206,9 +206,11 @@ function Event() {
 
           <Box
             display="flex"
+            flexwrap="wrap"
             gap={2}
             mt={3}
             justifyContent={{ xs: "center", md: "flex-start" }}
+            flexDirection = {{ xs: "column", md: "row" }}
           >
             <Button
               variant="contained"

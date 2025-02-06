@@ -59,7 +59,6 @@ const AddToCalendarButton = ({ event }) => {
   };
 
   return (
-    // <button onClick={addToCalendar}>Add to Google Calendar</button>;
     <Button
       variant="contained"
       startIcon={<CalendarMonthIcon />}

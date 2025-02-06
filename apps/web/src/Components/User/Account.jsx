@@ -1,9 +1,14 @@
 import { useState } from "react";
 import { useAuth } from "../Authentication/AuthContext";
 import { changePassword } from "../../AxiosApi/axiosApi";
-import { CircularProgress } from "@mui/material";
 import StaffStatus from "./staffStatus";
-
+import {
+  Box,
+  TextField,
+  Button,
+  CircularProgress,
+  Typography,
+} from "@mui/material";
 function Account() {
   const { user, loading, logout, showToast } = useAuth();
   const [isEditingName, setIsEditingName] = useState(false);
@@ -52,7 +57,6 @@ function Account() {
   const handleUpdateName = (e) => {
     e.preventDefault();
     if (validateName()) {
-      //send api request
       console.log("Name updated:", { forename, surname });
       setIsEditingName(false);
     }
@@ -89,90 +93,157 @@ function Account() {
   if (loading) return <p>Loading...</p>;
 
   return (
-    <div>
-      <h2>Account Details</h2>
-      <p>Email: {user?.email}</p>
+    <Box
+      sx={{
+        maxWidth: 600,
+        margin: "0 auto",
+        padding: 3,
+        backgroundColor: "white",
+        boxShadow: 3,
+        borderRadius: 2,
+        marginTop: { xs: 0, sm: "1rem", md: "3rem" },
+      }}
+    >
+      <Typography variant="h4" sx={{ marginBottom: 2, textAlign: "center" }}>
+        Account Details
+      </Typography>
+
+      <Typography variant="body1" sx={{ marginBottom: 2 }}>
+        Email: {user?.email}
+      </Typography>
+
       {!isEditingName ? (
         <>
-          <p>
+          <Typography variant="body1" sx={{ marginBottom: 2 }}>
             Name: {forename} {surname}
-          </p>
+          </Typography>
           {/* <button onClick={() => setIsEditingName(true)}>Update Name</button> */}
         </>
       ) : (
         <form onSubmit={handleUpdateName}>
-          <input
-            type="text"
-            placeholder="Forename"
-            value={forename}
-            onChange={(e) => setForename(e.target.value)}
-          />
-          <input
-            type="text"
-            placeholder="Surname"
-            value={surname}
-            onChange={(e) => setSurname(e.target.value)}
-          />
-          {nameError && <p style={{ color: "red" }}>{nameError}</p>}
-          <button type="submit">Save Name</button>
+          <Box sx={{ marginBottom: 2 }}>
+            <TextField
+              type="text"
+              placeholder="Forename"
+              value={forename}
+              onChange={(e) => setForename(e.target.value)}
+              fullWidth
+            />
+          </Box>
+          <Box sx={{ marginBottom: 2 }}>
+            <TextField
+              type="text"
+              placeholder="Surname"
+              value={surname}
+              onChange={(e) => setSurname(e.target.value)}
+              fullWidth
+            />
+          </Box>
+          {nameError && (
+            <Typography variant="body2" color="error" sx={{ marginBottom: 2 }}>
+              {nameError}
+            </Typography>
+          )}
+          <Box sx={{ textAlign: "center" }}>
+            <Button type="submit" variant="contained" color="primary" fullWidth>
+              Save Name
+            </Button>
+          </Box>
         </form>
       )}
-      <hr />
+
+      <hr style={{ margin: "1rem 0" }} />
+
       {!isChangingPassword ? (
-        <button
-          onClick={() => {
-            setIsChangingPassword(true);
-            setsuccessMessage("");
-          }}
-        >
-          Change Password
-        </button>
+        <Box sx={{ textAlign: "center" }}>
+          <Button
+            onClick={() => {
+              setIsChangingPassword(true);
+              setSuccessMessage("");
+            }}
+            variant="outlined"
+            color="primary"
+          >
+            Change Password
+          </Button>
+        </Box>
       ) : (
         <form onSubmit={handleChangePassword}>
-          <input
-            type="password"
-            placeholder="Old Password"
-            value={oldPassword}
-            onChange={(e) => setOldPassword(e.target.value)}
-          />
-          <input
-            type="password"
-            placeholder="New Password"
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-          />
-          <input
-            type="password"
-            placeholder="Confirm New Password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-          />
-          <button type="submit">
-            {passwordUpdating === true ? (
-              <CircularProgress size={20} />
-            ) : (
-              <>Save password</>
-            )}
-          </button>
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              setIsChangingPassword(false);
-            }}
+          <Box sx={{ marginBottom: 2 }}>
+            <TextField
+              type="password"
+              placeholder="Old Password"
+              value={oldPassword}
+              onChange={(e) => setOldPassword(e.target.value)}
+              fullWidth
+            />
+          </Box>
+          <Box sx={{ marginBottom: 2 }}>
+            <TextField
+              type="password"
+              placeholder="New Password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              fullWidth
+            />
+          </Box>
+          <Box sx={{ marginBottom: 2 }}>
+            <TextField
+              type="password"
+              placeholder="Confirm New Password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              fullWidth
+            />
+          </Box>
+          <Box sx={{ textAlign: "center" }}>
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              fullWidth
+              disabled={passwordUpdating}
             >
-            <>Cancel</>
-          </button>
-            {passwordError && <p style={{ color: "red" }}>{passwordError}</p>}
+              {passwordUpdating ? (
+                <CircularProgress size={20} color="inherit" />
+              ) : (
+                "Save Password"
+              )}
+            </Button>
+          </Box>
+          <Box sx={{ textAlign: "center", marginTop: 2 }}>
+            <Button
+              onClick={(e) => {
+                e.preventDefault();
+                setIsChangingPassword(false);
+              }}
+              variant="outlined"
+              color="secondary"
+            >
+              Cancel
+            </Button>
+          </Box>
+          {passwordError && (
+            <Typography variant="body2" color="error" sx={{ marginTop: 2 }}>
+              {passwordError}
+            </Typography>
+          )}
         </form>
       )}
-      {successMessage && <p style={{ color: "green" }}>{successMessage}</p>}
+
+      {successMessage && (
+        <Typography variant="body2" color="success" sx={{ marginTop: 2 }}>
+          {successMessage}
+        </Typography>
+      )}
+
       {user.staff && (
-        <div>
+        <Box sx={{ marginTop: 3 }}>
           <hr />
           <StaffStatus user={user} />
-        </div>
+        </Box>
       )}
-    </div>
+    </Box>
   );
 }
 
