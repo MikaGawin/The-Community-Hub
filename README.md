@@ -99,10 +99,10 @@ PGPORT=your_pg_port
    - Use `netlify deploy --prod` for production deployment.
 5. Update authorized JavaScript origins in Google Cloud with your hosted frontend URL.
 
-## Database & Seed Data
+## Database & Seed Dataexists in the `users` table with
 - Seed data is located in `/apps/backend/db/data/dev-data`.
 - You can remove data from `events` and `subscribed_events` tables.
-- Ensure at least one user exists in the `users` table with `staff: true` as this is the superuser.
+- Ensure the first user has `staff: true` and is not deleted as user 1 will be superuser and is the only user that cannot remove their staff permissions.
 
 ## Test Accounts
 For testing, use the following test accounts:
