@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 import EventCard from "./MyEventCard";
 import { getUserEvents } from "../../AxiosApi/axiosApi";
 import { useAuth } from "../Authentication/AuthContext";
-
 import ConnectionFailed from "../ErrorFeedback/ConnectionFailed";
+import { Box, Typography, Grid } from "@mui/material";
 
-function Events() {
+function MyEvents() {
   const { user, loading, logout, showToast } = useAuth();
   const [eventsData, setEventsData] = useState({
     events: [],
@@ -30,7 +30,7 @@ function Events() {
       }
       setIsLoading(false);
     });
-  }, []);
+  }, [user.user_id]);
 
   if (loading) return <p>Loading...</p>;
 
@@ -40,26 +40,63 @@ function Events() {
 
   return (
     <>
-      <div id="result-count">
-        {isLoading ? (
-          <>Finding events</>
-        ) : (
-          <h1>Showing your subscribed events</h1>
-        )}
-      </div>
-      <div>
-        <ul>
+      <Box
+        sx={{
+          width: "100%",
+          justifyContent: "flex-end",
+          borderBottom: "1px solid #ddd",
+          padding: 2,
+          margin: "0",
+          backgroundColor: "grey.300",
+          boxSizing: "border-box",
+          display: "flex",
+          flexWrap: "wrap",
+          gap: 2,
+          textAlign: "center",
+          flexDirection: { xs: "column", md: "row" },
+          alignItems: { xs: "center", md: "flex-end" },
+        }}
+      >
+        <Box sx={{ width: "100%" }}>
+          <Typography variant="body1" fontWeight="bold">
+            Showing your subscribed events
+          </Typography>
+        </Box>
+      </Box>
+
+      <Box p={2}>
+        <Typography variant="body1" sx={{ flex: "1 1 auto", minWidth: "250px" }}>
+          {isLoading ? "Finding events..." : ""}
+        </Typography>
+
+        <Grid container spacing={3} justifyContent="flex-start">
           {eventsData.events.length > 0 ? (
             eventsData.events.map((event) => (
-              <EventCard key={event.event_id} event={event} />
+              <Grid
+                item
+                key={event.event_id}
+                lg={3}
+                xs={12}
+                sm={6}
+                md={4}
+                sx={{
+                  minWidth: "320px",
+                  display: "flex",
+                  justifyContent: "center",
+                }}
+              >
+                <EventCard event={event} />
+              </Grid>
             ))
           ) : (
-            <p>No events available.</p>
+            <Typography variant="body2" sx={{ textAlign: "center", width: "100%" }}>
+              No events available.
+            </Typography>
           )}
-        </ul>
-      </div>
+        </Grid>
+      </Box>
     </>
   );
 }
 
-export default Events;
+export default MyEvents;

@@ -8,7 +8,7 @@ import { getEvents } from "../../AxiosApi/axiosApi";
 import PageSetter from "./PageSetter";
 
 import ConnectionFailed from "../ErrorFeedback/ConnectionFailed";
-import { Grid, Box, Select, MenuItem, Typography } from "@mui/material";
+import { Grid, Box, Typography } from "@mui/material";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -201,7 +201,7 @@ function Events() {
               }`}
         </Typography>
 
-        <Grid container spacing={3} justifyContent="center">
+        <Grid container spacing={3} justifyContent="flex-start">
           {eventsData.events.map((event) => (
             <Grid
               item

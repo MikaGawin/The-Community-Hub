@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { postUser } from "../../AxiosApi/axiosApi";
-import { CircularProgress } from "@mui/material";
 import { useNavigate } from "react-router";
+import { Box, TextField, Button, CircularProgress, Typography } from "@mui/material";
+
 
 function UserCreateForm() {
   const [userInput, setUserInput] = useState({
@@ -168,76 +169,108 @@ function UserCreateForm() {
 
   return (
     <>
-      <h1>
+      <Box
+        sx={{
+          maxWidth: 600,
+          margin: "0 auto",
+          padding: 3,
+          backgroundColor: "white",
+          boxShadow: 3,
+          borderRadius: 2,
+          marginTop:{xs:0, sm: "1rem", md:"5rem"}
+        }}
+      >
+        <Typography variant="h4" sx={{ marginBottom: 2, textAlign: "center" }}>
+          Create Account
+        </Typography>
         <form onSubmit={handleSubmit}>
-          <div>
-            <input
+          <Box sx={{ marginBottom: 2 }}>
+            <TextField
               value={userInput.Forename}
               onChange={handleChange}
               type="text"
               id="Forename"
               name="Forename"
-              placeholder="Forename"
+              label="Forename"
+              fullWidth
+              error={hasForenameError}
+              helperText={hasForenameError ? forenameError : ""}
             />
-            {hasForenameError ? <>{forenameError}</> : null}
-          </div>
-          <div>
-            <input
+          </Box>
+          <Box sx={{ marginBottom: 2 }}>
+            <TextField
               value={userInput.Surname}
               onChange={handleChange}
               type="text"
               id="Surname"
               name="Surname"
-              placeholder="Surname"
+              label="Surname"
+              fullWidth
+              error={hasSurnameError}
+              helperText={hasSurnameError ? surnameError : ""}
             />
-            {hasSurnameError ? <>{surnameError}</> : null}
-          </div>
-          <div>
-            <input
+          </Box>
+          <Box sx={{ marginBottom: 2 }}>
+            <TextField
               value={userInput.Email}
               onChange={handleChange}
               id="Email"
               name="Email"
-              placeholder="Email"
+              label="Email"
+              fullWidth
+              error={hasEmailError}
+              helperText={hasEmailError ? emailError : ""}
             />
-            {hasEmailError ? <>{emailError}</> : null}
-          </div>
-          <div>
-            <input
+          </Box>
+          <Box sx={{ marginBottom: 2 }}>
+            <TextField
               value={userInput.Password}
               onChange={handleChange}
               type="password"
               id="Password"
               name="Password"
-              placeholder="Password"
+              label="Password"
+              fullWidth
+              error={hasPasswordError}
+              helperText={hasPasswordError ? passwordError : ""}
             />
-            {hasPasswordError ? <>{passwordError}</> : null}
-          </div>
-          <div>
-            <input
+          </Box>
+          <Box sx={{ marginBottom: 2 }}>
+            <TextField
               value={userInput.RepeatPassword}
               onChange={handleChange}
               type="password"
               id="RepeatPassword"
               name="RepeatPassword"
-              placeholder="Repeat Password"
+              label="Repeat Password"
+              fullWidth
+              error={hasRepeatPasswordError}
+              helperText={hasRepeatPasswordError ? repeatPasswordError : ""}
             />
-            {hasRepeatPasswordError ? <>{repeatPasswordError}</> : null}
-          </div>
-          <button>
-            {createUserIsProcessing === true ? (
-              <CircularProgress size={20} />
-            ) : (
-              <>Submit</>
-            )}
-          </button>
-          {connectionError && (
-            <p style={{ color: "red" }}>
-              An error occurred. Please try again.
-            </p>
-          )}
+          </Box>
+          <Box sx={{ textAlign: "center", marginBottom: 2 }}>
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              fullWidth
+              disabled={createUserIsProcessing}
+            >
+              {createUserIsProcessing ? (
+                <CircularProgress size={24} color="inherit" />
+              ) : (
+                "Submit"
+              )}
+            </Button>
+          </Box>
         </form>
-      </h1>
+
+        {connectionError && (
+          <Typography variant="body2" color="error" sx={{ textAlign: "center", marginTop: 2 }}>
+            An error occurred. Please try again.
+          </Typography>
+        )}
+      </Box>
     </>
   );
 }
