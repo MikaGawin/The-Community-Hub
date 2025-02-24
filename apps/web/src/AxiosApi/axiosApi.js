@@ -36,6 +36,7 @@ export function requestUserToken(email, password) {
       return data;
     })
     .catch((err) => {
+      console.log(err)
       if (err.response) {
         return err;
       } else {
@@ -72,7 +73,6 @@ export function getEvents({
     })
     .catch((err) => {
       return "failed to connect to server";
-      console.log(err);
     });
 }
 

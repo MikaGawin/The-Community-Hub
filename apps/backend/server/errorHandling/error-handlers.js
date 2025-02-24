@@ -17,6 +17,8 @@ exports.invalidQuery = (err, req, res, next) => {
     res.status(404).send({ msg: "Invalid selection" });
   } else if (err.code === "23505") {
     res.status(400).send({ msg: "Key already exists" });
+  } else if (err.code === "3D000") {
+    res.status(404).send({ msg: "Database not found" });
   } else {
     next(err);
   }

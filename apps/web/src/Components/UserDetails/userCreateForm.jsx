@@ -1,8 +1,13 @@
 import { useState } from "react";
 import { postUser } from "../../AxiosApi/axiosApi";
 import { useNavigate } from "react-router";
-import { Box, TextField, Button, CircularProgress, Typography } from "@mui/material";
-
+import {
+  Box,
+  TextField,
+  Button,
+  CircularProgress,
+  Typography,
+} from "@mui/material";
 
 function UserCreateForm() {
   const [userInput, setUserInput] = useState({
@@ -149,9 +154,9 @@ function UserCreateForm() {
           if (data.response.data.msg === "Email already exists") {
             setHasEmailError(true);
             setEmailError("Email already exists");
+          } else if (data.response.status !== 201) {
+            setConnectionError(true);
           }
-        } else if (data === "failed to connect to server") {
-          setConnectionError(true);
         } else {
           setUserInput({
             Forename: "",
@@ -168,109 +173,112 @@ function UserCreateForm() {
   }
 
   return (
-      <Box
-        sx={{
-          maxWidth: 600,
-          margin: "0 auto",
-          padding: 3,
-          backgroundColor: "white",
-          boxShadow: 3,
-          borderRadius: 2,
-          marginTop:{xs:0, sm: "1rem", md:"5rem"}
-        }}
-      >
-        <Typography variant="h4" sx={{ marginBottom: 2, textAlign: "center" }}>
-          Create Account
+    <Box
+      sx={{
+        maxWidth: 600,
+        margin: "0 auto",
+        padding: 3,
+        backgroundColor: "white",
+        boxShadow: 3,
+        borderRadius: 2,
+        marginTop: { xs: 0, sm: "1rem", md: "5rem" },
+      }}
+    >
+      <Typography variant="h4" sx={{ marginBottom: 2, textAlign: "center" }}>
+        Create Account
+      </Typography>
+      <form onSubmit={handleSubmit}>
+        <Box sx={{ marginBottom: 2 }}>
+          <TextField
+            value={userInput.Forename}
+            onChange={handleChange}
+            type="text"
+            id="Forename"
+            name="Forename"
+            label="Forename"
+            fullWidth
+            error={hasForenameError}
+            helperText={hasForenameError ? forenameError : ""}
+          />
+        </Box>
+        <Box sx={{ marginBottom: 2 }}>
+          <TextField
+            value={userInput.Surname}
+            onChange={handleChange}
+            type="text"
+            id="Surname"
+            name="Surname"
+            label="Surname"
+            fullWidth
+            error={hasSurnameError}
+            helperText={hasSurnameError ? surnameError : ""}
+          />
+        </Box>
+        <Box sx={{ marginBottom: 2 }}>
+          <TextField
+            value={userInput.Email}
+            onChange={handleChange}
+            id="Email"
+            name="Email"
+            label="Email"
+            fullWidth
+            error={hasEmailError}
+            helperText={hasEmailError ? emailError : ""}
+          />
+        </Box>
+        <Box sx={{ marginBottom: 2 }}>
+          <TextField
+            value={userInput.Password}
+            onChange={handleChange}
+            type="password"
+            id="Password"
+            name="Password"
+            label="Password"
+            fullWidth
+            error={hasPasswordError}
+            helperText={hasPasswordError ? passwordError : ""}
+          />
+        </Box>
+        <Box sx={{ marginBottom: 2 }}>
+          <TextField
+            value={userInput.RepeatPassword}
+            onChange={handleChange}
+            type="password"
+            id="RepeatPassword"
+            name="RepeatPassword"
+            label="Repeat Password"
+            fullWidth
+            error={hasRepeatPasswordError}
+            helperText={hasRepeatPasswordError ? repeatPasswordError : ""}
+          />
+        </Box>
+        <Box sx={{ textAlign: "center", marginBottom: 2 }}>
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            fullWidth
+            disabled={createUserIsProcessing}
+          >
+            {createUserIsProcessing ? (
+              <CircularProgress size={24} color="inherit" />
+            ) : (
+              "Submit"
+            )}
+          </Button>
+        </Box>
+      </form>
+
+      {connectionError && (
+        <Typography
+          variant="body2"
+          color="error"
+          sx={{ textAlign: "center", marginTop: 2 }}
+        >
+          An error occurred. Please try again.
         </Typography>
-        <form onSubmit={handleSubmit}>
-          <Box sx={{ marginBottom: 2 }}>
-            <TextField
-              value={userInput.Forename}
-              onChange={handleChange}
-              type="text"
-              id="Forename"
-              name="Forename"
-              label="Forename"
-              fullWidth
-              error={hasForenameError}
-              helperText={hasForenameError ? forenameError : ""}
-            />
-          </Box>
-          <Box sx={{ marginBottom: 2 }}>
-            <TextField
-              value={userInput.Surname}
-              onChange={handleChange}
-              type="text"
-              id="Surname"
-              name="Surname"
-              label="Surname"
-              fullWidth
-              error={hasSurnameError}
-              helperText={hasSurnameError ? surnameError : ""}
-            />
-          </Box>
-          <Box sx={{ marginBottom: 2 }}>
-            <TextField
-              value={userInput.Email}
-              onChange={handleChange}
-              id="Email"
-              name="Email"
-              label="Email"
-              fullWidth
-              error={hasEmailError}
-              helperText={hasEmailError ? emailError : ""}
-            />
-          </Box>
-          <Box sx={{ marginBottom: 2 }}>
-            <TextField
-              value={userInput.Password}
-              onChange={handleChange}
-              type="password"
-              id="Password"
-              name="Password"
-              label="Password"
-              fullWidth
-              error={hasPasswordError}
-              helperText={hasPasswordError ? passwordError : ""}
-            />
-          </Box>
-          <Box sx={{ marginBottom: 2 }}>
-            <TextField
-              value={userInput.RepeatPassword}
-              onChange={handleChange}
-              type="password"
-              id="RepeatPassword"
-              name="RepeatPassword"
-              label="Repeat Password"
-              fullWidth
-              error={hasRepeatPasswordError}
-              helperText={hasRepeatPasswordError ? repeatPasswordError : ""}
-            />
-          </Box>
-          <Box sx={{ textAlign: "center", marginBottom: 2 }}>
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              fullWidth
-              disabled={createUserIsProcessing}
-            >
-              {createUserIsProcessing ? (
-                <CircularProgress size={24} color="inherit" />
-              ) : (
-                "Submit"
-              )}
-            </Button>
-          </Box>
-        </form>
-
-        {connectionError && (
-          <Typography variant="body2" color="error" sx={{ textAlign: "center", marginTop: 2 }}>
-            An error occurred. Please try again.
-          </Typography>
-        )}
-      </Box>
-
+      )}
+    </Box>
   );
 }
 

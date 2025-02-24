@@ -67,7 +67,7 @@ function UserLogin() {
         } else if (data.response.data.msg === "Incorrect password") {
           setLoginError("Incorrect password");
         } else {
-          //send to something went wrong page
+          setConnectionError(true);
         }
       } else if (data === "failed to connect to server") {
         setConnectionError(true);

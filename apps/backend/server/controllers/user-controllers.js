@@ -31,7 +31,7 @@ exports.postUser = (req, res, next) => {
         })
         .catch(next);
     }
-  );
+  ).catch(next);
 };
 
 exports.checkUser = async (email, password) => {

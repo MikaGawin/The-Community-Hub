@@ -115,8 +115,8 @@ function Events() {
       setIsLoading(false);
     });
   }, [sortedBy, page, search, startDate, endDate]);
-
-  function handleSelect(event) {
+  
+  function handleSelectSort(event) {
     const index = event.target.selectedIndex;
     const newParams = new URLSearchParams(searchParams);
     newParams.set("sort_by", index);
@@ -124,14 +124,16 @@ function Events() {
     setSearchParams(newParams);
     setSortedBy(allSortOptions[index]);
   }
-  if (!connectSuccess) {
-    return <ConnectionFailed />;
-  }
-
+  
+  
   const CustomInput = React.forwardRef(({ value, onClick }, ref) => (
     <input value={value} onClick={onClick} readOnly className="date-picker" />
   ));
-
+  
+  if (!connectSuccess) {
+    console.log(connectSuccess)
+    return <ConnectionFailed />;
+  }
   return (
     <>
       <Box
@@ -158,7 +160,7 @@ function Events() {
           <select
             id="sort-selector"
             aria-label="Sort options"
-            onChange={handleSelect}
+            onChange={handleSelectSort}
             value={`${sortedBy.sortByText}: ${sortedBy.orderText}`}
             style={{
               minWidth: "200px",
