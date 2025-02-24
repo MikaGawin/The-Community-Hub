@@ -18,7 +18,6 @@ This is a community-driven events platform that allows users to browse, create, 
 
 ## Live Hosted Version
 
-- **Backend:** [Events Platform API](https://events-platform-vcrx.onrender.com)
 - **Frontend:** [The Community Hub](https://thecommunityhub.netlify.app/)
 
 ### Test Accounts
