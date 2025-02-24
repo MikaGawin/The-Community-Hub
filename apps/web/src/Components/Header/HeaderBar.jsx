@@ -216,7 +216,13 @@ export default function CombinedAppBar() {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
+      <AppBar
+        position="static"
+        sx={{
+          backgroundColor: "#00008B",
+          color: "#ffffff",
+        }}
+      >
         <Toolbar sx={{ minHeight: "64px !important" }}>
           <Box sx={{ display: { xs: "flex", sm: "none" } }}>
             <IconButton
@@ -254,6 +260,12 @@ export default function CombinedAppBar() {
                 value={searchValue}
                 onChange={handleChange}
                 inputProps={{ "aria-label": "search" }}
+                sx={{
+                  color: "white",
+                  "&::placeholder": {
+                    color: "rgba(255, 255, 255, 0.7)",
+                  },
+                }}
               />
             </form>
           </Search>

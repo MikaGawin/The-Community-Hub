@@ -36,14 +36,16 @@ function Events() {
       ]
     : sortOptions;
 
-  const [sortedBy, setSortedBy] = useState(()=>{
-    const sortIndex = searchParams.get("sort_by")? searchParams.get("sort_by") : 0
+  const [sortedBy, setSortedBy] = useState(() => {
+    const sortIndex = searchParams.get("sort_by")
+      ? searchParams.get("sort_by")
+      : 0;
     return allSortOptions[sortIndex];
-  })
+  });
 
-  useEffect(()=> {
-    setSortedBy(allSortOptions[0])
-  }, [search])
+  useEffect(() => {
+    setSortedBy(allSortOptions[0]);
+  }, [search]);
 
   const [startDate, setStartDate] = useState(
     searchParams.get("startDate")
@@ -115,7 +117,7 @@ function Events() {
       setIsLoading(false);
     });
   }, [sortedBy, page, search, startDate, endDate]);
-  
+
   function handleSelectSort(event) {
     const index = event.target.selectedIndex;
     const newParams = new URLSearchParams(searchParams);
@@ -124,14 +126,19 @@ function Events() {
     setSearchParams(newParams);
     setSortedBy(allSortOptions[index]);
   }
-  
-  
-  const CustomInput = React.forwardRef(({ value, onClick }, ref) => (
-    <input value={value} onClick={onClick} readOnly className="date-picker" />
+
+  const CustomInput = React.forwardRef(({ value, onClick, ariaLabel }, ref) => (
+    <input
+      value={value}
+      onClick={onClick}
+      aria-label={ariaLabel}
+      readOnly
+      className="date-picker"
+    />
   ));
-  
+
   if (!connectSuccess) {
-    console.log(connectSuccess)
+    console.log(connectSuccess);
     return <ConnectionFailed />;
   }
   return (
@@ -182,7 +189,8 @@ function Events() {
             Start Date:
           </Typography>
           <DatePicker
-            customInput={<CustomInput />}
+            aria-label="Start date"
+            customInput={<CustomInput ariaLabel="Start date" />}
             selected={startDate}
             onChange={(date) => handleDateChange(date, endDate)}
             selectsStart
@@ -199,7 +207,8 @@ function Events() {
             End Date:
           </Typography>
           <DatePicker
-            customInput={<CustomInput />}
+            aria-label="End date"
+            customInput={<CustomInput ariaLabel="End date" />}
             selected={endDate}
             onChange={(date) => handleDateChange(startDate, date)}
             selectsEnd
