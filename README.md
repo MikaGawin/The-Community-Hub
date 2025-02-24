@@ -122,7 +122,7 @@ For testing, use the following test accounts:
 ### Regular User
 ```
    email: charlie@example.com,
-   password: "hashed_password_789
+   password: hashed_password_789
 ```
 
 ## Live Hosted Version
